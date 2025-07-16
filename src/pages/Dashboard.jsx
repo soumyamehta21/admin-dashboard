@@ -1,6 +1,7 @@
 import { Box } from "@mui/material";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
+import DashboardContent from "./DashboardContent";
 
 export default function Dashboard({ children }) {
   return (
@@ -23,7 +24,7 @@ export default function Dashboard({ children }) {
             backgroundColor: "background.dashboard",
           }}
         >
-          {children}
+          {children || <DashboardContent />}
         </Box>
       </Box>
     </Box>
