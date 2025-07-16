@@ -35,6 +35,7 @@ import {
   Area,
   AreaChart,
 } from "recharts";
+import { useTheme } from "@mui/material/styles";
 
 const statsCards = [
   {
@@ -132,6 +133,8 @@ const tableData = [
 ];
 
 export default function DashboardContent() {
+  const theme = useTheme();
+
   return (
     <Box sx={{ width: "100%", maxWidth: "100%" }}>
       <Typography variant="h4" fontWeight="bold" mb={3} color="text.main">
@@ -285,17 +288,20 @@ export default function DashboardContent() {
                     <stop offset="95%" stopColor="#4880ff" stopOpacity={0.05} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid stroke="#fafafa" vertical={false} />
+                <CartesianGrid
+                  stroke={theme.palette.mode === "dark" ? "#374151" : "#f8f9fa"}
+                  vertical={false}
+                />
                 <XAxis
                   dataKey="name"
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fontSize: 12, fill: "#9ca3af" }}
+                  tick={{ fontSize: 12, fill: theme.palette.text.secondary }}
                 />
                 <YAxis
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fontSize: 12, fill: "#9ca3af" }}
+                  tick={{ fontSize: 12, fill: theme.palette.text.secondary }}
                   domain={[0, 100]}
                   tickFormatter={(value) => `${value}%`}
                 />
