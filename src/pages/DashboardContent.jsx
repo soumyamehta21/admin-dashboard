@@ -137,7 +137,13 @@ export default function DashboardContent() {
 
   return (
     <Box sx={{ width: "100%", maxWidth: "100%" }}>
-      <Typography variant="h4" fontWeight="bold" mb={3} color="text.main">
+      <Typography
+        variant="h4"
+        fontWeight="bold"
+        mb={3}
+        color="text.main"
+        sx={{ fontSize: "1.5rem" }}
+      >
         Dashboard
       </Typography>
 

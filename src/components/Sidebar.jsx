@@ -23,17 +23,20 @@ const navItems = [
   {
     label: "Dashboard",
     icon: <DashboardIcon fontSize="small" />,
-    path: ["/dashboard", "/"],
+    path: "/dashboard",
+    paths: ["/dashboard", "/"],
   },
   {
     label: "Projects",
     icon: <GridView fontSize="small" />,
-    path: ["/projects"],
+    path: "/projects",
+    paths: ["/projects"],
   },
   {
     label: "Estimates",
     icon: <RequestQuote fontSize="small" />,
-    path: ["/estimations"],
+    path: "/estimations",
+    paths: ["/estimations"],
   },
 ];
 
@@ -74,7 +77,7 @@ export default function Sidebar() {
 
         <List sx={{ flexGrow: 1 }}>
           {navItems.map((item) => {
-            const isActive = item.path.includes(location.pathname);
+            const isActive = item.paths.includes(location.pathname);
 
             return (
               <ListItem key={item.label} disablePadding>
@@ -102,6 +105,15 @@ export default function Sidebar() {
                       position: "relative",
                       overflow: "hidden",
                       pl: 2.5,
+                      "&:hover": {
+                        backgroundColor: isActive
+                          ? "primary.main"
+                          : "rgba(72, 128, 255, 0.08)",
+                        color: isActive ? "#fff" : "primary.main",
+                        "& .MuiListItemIcon-root": {
+                          color: isActive ? "#fff" : "primary.main",
+                        },
+                      },
                       "&:before": isActive
                         ? {
                             content: "''",
@@ -126,7 +138,7 @@ export default function Sidebar() {
                       gap={"12px"}
                     >
                       <Box display={"flex"}>{item.icon}</Box>
-                      <Box display={"flex"}>{item.label} </Box>
+                      <Box display={"flex"}>{item.label}</Box>
                     </Box>
                   </ListItemButton>
                 </NavLink>

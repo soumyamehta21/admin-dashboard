@@ -4,6 +4,7 @@ import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import ProtectedRoute from "./components/ProtectedRoutes";
 import Dashboard from "./pages/Dashboard";
+import Projects from "./pages/Projects";
 
 function App() {
   return (
@@ -24,6 +25,26 @@ function App() {
         element={
           <ProtectedRoute dynamicPath={"/login"}>
             <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/projects"
+        element={
+          <ProtectedRoute dynamicPath={"/login"}>
+            <Dashboard>
+              <Projects />
+            </Dashboard>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/estimations"
+        element={
+          <ProtectedRoute dynamicPath={"/login"}>
+            <Dashboard>
+              <div>Estimates Page - Coming Soon</div>
+            </Dashboard>
           </ProtectedRoute>
         }
       />
