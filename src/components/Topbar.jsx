@@ -20,10 +20,32 @@ import {
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleTheme } from "../redux/slices/themeSlice";
+import { useTranslation } from "react-i18next";
 
 export default function Topbar() {
   const dispatch = useDispatch();
   const mode = useSelector((state) => state.theme.mode);
+  const { t, i18n } = useTranslation();
+
+  const handleLanguageChange = (event) => {
+    const newLanguage = event.target.value;
+    i18n.changeLanguage(newLanguage);
+    localStorage.setItem("language", newLanguage);
+  };
+
+  const getLanguageFlag = (lang) => {
+    switch (lang) {
+      case "en":
+        return "https://flagcdn.com/gb.svg";
+      case "fr":
+        return "https://flagcdn.com/fr.svg";
+      case "es":
+        return "https://flagcdn.com/es.svg";
+      default:
+        return "https://flagcdn.com/gb.svg";
+    }
+  };
+
   return (
     <AppBar
       position="sticky"
@@ -61,7 +83,7 @@ export default function Topbar() {
             }}
           >
             <SearchIcon fontSize="small" sx={{ color: "gray", mr: 1 }} />
-            <InputBase placeholder="Search" fullWidth />
+            <InputBase placeholder={t("search")} fullWidth />
           </Box>
         </Box>
 
@@ -73,8 +95,8 @@ export default function Topbar() {
           </IconButton>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <img
-              src="https://flagcdn.com/gb.svg"
-              alt="UK Flag"
+              src={getLanguageFlag(i18n.language)}
+              alt="Flag"
               width={24}
               height={18}
               style={{ borderRadius: 2 }}
@@ -82,12 +104,13 @@ export default function Topbar() {
             <Select
               variant="standard"
               disableUnderline
-              defaultValue="en"
+              value={i18n.language}
+              onChange={handleLanguageChange}
               sx={{ fontSize: 14 }}
             >
-              <MenuItem value="en">English</MenuItem>
-              <MenuItem value="fr">Français</MenuItem>
-              <MenuItem value="es">Español</MenuItem>
+              <MenuItem value="en">{t("english")}</MenuItem>
+              <MenuItem value="fr">{t("french")}</MenuItem>
+              <MenuItem value="es">{t("spanish")}</MenuItem>
             </Select>
           </Box>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -101,7 +124,7 @@ export default function Topbar() {
                 Harley
               </Typography>
               <Typography variant="caption" color="text.secondary">
-                Admin
+                {t("admin")}
               </Typography>
             </Box>
           </Box>

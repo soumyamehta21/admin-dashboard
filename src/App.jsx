@@ -5,6 +5,9 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ProtectedRoute from "./components/ProtectedRoutes";
 import Dashboard from "./pages/Dashboard";
 import Projects from "./pages/Projects";
+import AddProject from "./pages/AddProject";
+import EditProject from "./pages/EditProject";
+import Estimates from "./pages/Estimates";
 
 function App() {
   return (
@@ -39,11 +42,31 @@ function App() {
         }
       />
       <Route
+        path="/projects/add"
+        element={
+          <ProtectedRoute dynamicPath={"/login"}>
+            <Dashboard>
+              <AddProject />
+            </Dashboard>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/projects/edit/:id"
+        element={
+          <ProtectedRoute dynamicPath={"/login"}>
+            <Dashboard>
+              <EditProject />
+            </Dashboard>
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/estimations"
         element={
           <ProtectedRoute dynamicPath={"/login"}>
             <Dashboard>
-              <div>Estimates Page - Coming Soon</div>
+              <Estimates />
             </Dashboard>
           </ProtectedRoute>
         }

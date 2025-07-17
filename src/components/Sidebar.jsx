@@ -18,22 +18,23 @@ import {
 import { NavLink, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout } from "../redux/slices/authSlice";
+import { useTranslation } from "react-i18next";
 
 const navItems = [
   {
-    label: "Dashboard",
+    label: "dashboard",
     icon: <DashboardIcon fontSize="small" />,
     path: "/dashboard",
     paths: ["/dashboard", "/"],
   },
   {
-    label: "Projects",
+    label: "projects",
     icon: <GridView fontSize="small" />,
     path: "/projects",
-    paths: ["/projects"],
+    paths: ["/projects", "/projects/add", "/projects/edit/:id"],
   },
   {
-    label: "Estimates",
+    label: "estimates",
     icon: <RequestQuote fontSize="small" />,
     path: "/estimations",
     paths: ["/estimations"],
@@ -43,6 +44,7 @@ const navItems = [
 export default function Sidebar() {
   const location = useLocation();
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   return (
     <Drawer
@@ -77,7 +79,10 @@ export default function Sidebar() {
 
         <List sx={{ flexGrow: 1 }}>
           {navItems.map((item) => {
-            const isActive = item.paths.includes(location.pathname);
+            const isActive =
+              item.paths.includes(location.pathname) ||
+              (item.path === "/projects" &&
+                location.pathname.startsWith("/projects/edit/"));
 
             return (
               <ListItem key={item.label} disablePadding>
@@ -91,42 +96,17 @@ export default function Sidebar() {
                 >
                   <ListItemButton
                     sx={{
-                      mx: 1.5,
-                      my: 0.5,
-                      marginLeft: 0,
-                      marginRight: "24px",
-                      borderRadius: "8px",
-                      borderBottomLeftRadius: 0,
-                      borderTopLeftRadius: 0,
                       backgroundColor: isActive
                         ? "primary.main"
                         : "transparent",
-                      color: isActive ? "#fff" : "text.main",
-                      position: "relative",
-                      overflow: "hidden",
-                      pl: 2.5,
+                      color: isActive ? "white" : "text.primary",
+                      borderRadius: "8px",
+                      mx: 2,
+                      mb: 0.5,
                       "&:hover": {
                         backgroundColor: isActive
                           ? "primary.main"
-                          : "rgba(72, 128, 255, 0.08)",
-                        color: isActive ? "#fff" : "primary.main",
-                        "& .MuiListItemIcon-root": {
-                          color: isActive ? "#fff" : "primary.main",
-                        },
-                      },
-                      "&:before": isActive
-                        ? {
-                            content: "''",
-                            position: "absolute",
-                            left: 8,
-                            top: 0,
-                            height: "100%",
-                            width: 10,
-                            backgroundColor: "background.default",
-                          }
-                        : {},
-                      "& .MuiListItemIcon-root": {
-                        color: isActive ? "#fff" : "#000",
+                          : "action.hover",
                       },
                     }}
                   >
@@ -138,7 +118,7 @@ export default function Sidebar() {
                       gap={"12px"}
                     >
                       <Box display={"flex"}>{item.icon}</Box>
-                      <Box display={"flex"}>{item.label}</Box>
+                      <Box display={"flex"}>{t(item.label)}</Box>
                     </Box>
                   </ListItemButton>
                 </NavLink>
@@ -160,7 +140,7 @@ export default function Sidebar() {
               <ListItemIcon>
                 <Logout />
               </ListItemIcon>
-              <ListItemText primary="Logout" />
+              <ListItemText primary={t("logout")} />
             </ListItemButton>
           </ListItem>
         </Box>

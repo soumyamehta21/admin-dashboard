@@ -36,39 +36,40 @@ import {
   AreaChart,
 } from "recharts";
 import { useTheme } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
 
-const statsCards = [
+const statsCards = ({ t }) => [
   {
-    title: "Total User",
+    title: t("totalUser"),
     value: "40,689",
-    change: "8.5% Up from yesterday",
+    change: t("upFromYesterday", { percentage: "8.5%" }),
     trend: "up",
     icon: <PersonOutline />,
     color: "#4880ff",
     bgColor: "#e8f0ff",
   },
   {
-    title: "Total Order",
+    title: t("totalOrder"),
     value: "10293",
-    change: "1.3% Up from past week",
+    change: t("upFromPastWeek", { percentage: "1.3%" }),
     trend: "up",
     icon: <LocalMallOutlined />,
     color: "#ffa726",
     bgColor: "#fff8e1",
   },
   {
-    title: "Total Sales",
+    title: t("totalSales"),
     value: "$89,000",
-    change: "4.3% Down from yesterday",
+    change: t("downFromYesterday", { percentage: "4.3%" }),
     trend: "down",
     icon: <AttachMoneyOutlined />,
     color: "#66bb6a",
     bgColor: "#e8f5e8",
   },
   {
-    title: "Total Pending",
+    title: t("totalPending"),
     value: "2040",
-    change: "1.8% Up from yesterday",
+    change: t("upFromYesterday", { percentage: "1.8%" }),
     trend: "up",
     icon: <AccessTimeOutlined />,
     color: "#ef5350",
@@ -134,6 +135,7 @@ const tableData = [
 
 export default function DashboardContent() {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   return (
     <Box sx={{ width: "100%", maxWidth: "100%" }}>
@@ -144,7 +146,7 @@ export default function DashboardContent() {
         color="text.main"
         sx={{ fontSize: "1.5rem" }}
       >
-        Dashboard
+        {t("dashboard")}
       </Typography>
 
       {/* Stats Cards */}
@@ -166,7 +168,7 @@ export default function DashboardContent() {
           },
         }}
       >
-        {statsCards.map((card, index) => (
+        {statsCards({ t }).map((card, index) => (
           <Card
             key={index}
             sx={{
@@ -271,17 +273,17 @@ export default function DashboardContent() {
             mb={3}
           >
             <Typography variant="h6" fontWeight="bold" color="text.main">
-              Sales Details
+              {t("salesDetails")}
             </Typography>
             <FormControl size="small">
               <Select
-                defaultValue="October"
+                defaultValue="october"
                 variant="outlined"
                 sx={{ borderRadius: "8px" }}
               >
-                <MenuItem value="October">October</MenuItem>
-                <MenuItem value="November">November</MenuItem>
-                <MenuItem value="December">December</MenuItem>
+                <MenuItem value="october">{t("october")}</MenuItem>
+                <MenuItem value="november">{t("november")}</MenuItem>
+                <MenuItem value="december">{t("december")}</MenuItem>
               </Select>
             </FormControl>
           </Box>
@@ -369,17 +371,17 @@ export default function DashboardContent() {
             mb={3}
           >
             <Typography variant="h6" fontWeight="bold" color="text.main">
-              Table
+              {t("table")}
             </Typography>
             <FormControl size="small">
               <Select
-                defaultValue="October"
+                defaultValue="october"
                 variant="outlined"
                 sx={{ borderRadius: "8px" }}
               >
-                <MenuItem value="October">October</MenuItem>
-                <MenuItem value="November">November</MenuItem>
-                <MenuItem value="December">December</MenuItem>
+                <MenuItem value="october">{t("october")}</MenuItem>
+                <MenuItem value="november">{t("november")}</MenuItem>
+                <MenuItem value="december">{t("december")}</MenuItem>
               </Select>
             </FormControl>
           </Box>
@@ -387,12 +389,12 @@ export default function DashboardContent() {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Product Name</TableCell>
-                  <TableCell>Location</TableCell>
-                  <TableCell>Date - Time</TableCell>
-                  <TableCell>Piece</TableCell>
-                  <TableCell>Amount</TableCell>
-                  <TableCell>Status</TableCell>
+                  <TableCell>{t("productName")}</TableCell>
+                  <TableCell>{t("location")}</TableCell>
+                  <TableCell>{t("dateTime")}</TableCell>
+                  <TableCell>{t("piece")}</TableCell>
+                  <TableCell>{t("amount")}</TableCell>
+                  <TableCell>{t("status")}</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -435,15 +437,25 @@ export default function DashboardContent() {
                     </TableCell>
                     <TableCell>
                       <Chip
-                        label={row.status}
+                        label={t(row.status.toLowerCase().replace(" ", ""))}
                         size="small"
                         sx={{
                           backgroundColor:
-                            row.status === "Delivered" ? "#00B69B" : "#f57c00",
+                            row.status === "Delivered"
+                              ? "#e8f5e8"
+                              : row.status === "Pending"
+                              ? "#fff3e0"
+                              : "#f5f5f5",
                           color:
-                            row.status === "Delivered" ? "#ffffff" : "#ffffff",
-                          fontWeight: "medium",
-                          borderRadius: "999px",
+                            row.status === "Delivered"
+                              ? "#2e7d32"
+                              : row.status === "Pending"
+                              ? "#f57c00"
+                              : "#666",
+                          fontWeight: 500,
+                          fontSize: "12px",
+                          height: "24px",
+                          borderRadius: "12px",
                         }}
                       />
                     </TableCell>

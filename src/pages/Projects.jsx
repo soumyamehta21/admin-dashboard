@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -22,6 +23,7 @@ import {
   Pagination,
   InputAdornment,
   ClickAwayListener,
+  Tooltip,
 } from "@mui/material";
 import {
   FilterList,
@@ -36,14 +38,17 @@ import {
 import { projectsData } from "../data/projectsData";
 
 export default function Projects() {
+  const navigate = useNavigate();
   const [filterBy, setFilterBy] = useState("Date");
   const [status, setStatus] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [hideColumns, setHideColumns] = useState([]);
   const [showColumnDialog, setShowColumnDialog] = useState(false);
+  const [showColumnPicker, setShowColumnPicker] = useState(false);
+  const [showStatusPicker, setShowStatusPicker] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDates, setSelectedDates] = useState([]);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const itemsPerPage = 10;
 
@@ -97,13 +102,58 @@ export default function Projects() {
     setFilterBy("Date");
     setStatus("");
     setSearchTerm("");
-    setSelectedDate(null);
+    setSelectedDates([]);
     setCurrentPage(1);
   };
 
   const handleDateSelect = (date) => {
-    setSelectedDate(date);
-    setShowDatePicker(false);
+    setSelectedDates((prev) => {
+      const dateString = date.toDateString();
+      const isSelected = prev.some((d) => d.toDateString() === dateString);
+
+      if (isSelected) {
+        return prev.filter((d) => d.toDateString() !== dateString);
+      } else {
+        return [...prev, date];
+      }
+    });
+  };
+
+  const formatSelectedDates = () => {
+    if (selectedDates.length === 0) return "Date";
+    if (selectedDates.length === 1) {
+      return selectedDates[0].toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      });
+    }
+    return `${selectedDates.length} dates selected`;
+  };
+
+  const getFullDateText = () => {
+    if (selectedDates.length === 0) return "Date";
+    if (selectedDates.length === 1) {
+      return selectedDates[0].toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      });
+    }
+    const sortedDates = [...selectedDates].sort((a, b) => a - b);
+    return sortedDates
+      .map((date) =>
+        date.toLocaleDateString("en-GB", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        })
+      )
+      .join(", ");
+  };
+
+  const isDateSelected = (date) => {
+    return selectedDates.some((d) => d.toDateString() === date.toDateString());
   };
 
   const formatDate = (date) => {
@@ -229,23 +279,12 @@ export default function Projects() {
                 cursor: day ? "pointer" : "default",
                 borderRadius: "4px",
                 backgroundColor:
-                  selectedDate &&
-                  day &&
-                  day.toDateString() === selectedDate.toDateString()
-                    ? "primary.main"
-                    : "transparent",
-                color:
-                  selectedDate &&
-                  day &&
-                  day.toDateString() === selectedDate.toDateString()
-                    ? "white"
-                    : "text.primary",
+                  day && isDateSelected(day) ? "primary.main" : "transparent",
+                color: day && isDateSelected(day) ? "white" : "text.primary",
                 "&:hover": day
                   ? {
                       backgroundColor:
-                        selectedDate &&
-                        day &&
-                        day.toDateString() === selectedDate.toDateString()
+                        day && isDateSelected(day)
                           ? "primary.main"
                           : "action.hover",
                     }
@@ -279,9 +318,181 @@ export default function Projects() {
     );
   };
 
+  const ColumnPicker = () => {
+    return (
+      <Box
+        sx={{
+          position: "absolute",
+          top: "100%",
+          left: 0,
+          zIndex: 1000,
+          backgroundColor: "background.paper",
+          border: "1px solid",
+          borderColor: "divider",
+          borderRadius: "16px",
+          p: 2,
+          minWidth: "450px",
+          maxWidth: "500px",
+          width: "475px",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+        }}
+      >
+        <Typography variant="subtitle1" fontWeight="medium" mb={2}>
+          Select Columns
+        </Typography>
+
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 2 }}>
+          {columns.map((column) => (
+            <Box
+              key={column.id}
+              onClick={() => {
+                setHideColumns((prev) =>
+                  prev.includes(column.id)
+                    ? prev.filter((id) => id !== column.id)
+                    : [...prev, column.id]
+                );
+              }}
+              sx={{
+                padding: "8px 16px",
+                borderRadius: "20px",
+                cursor: "pointer",
+                border: "1px solid",
+                borderColor: hideColumns.includes(column.id)
+                  ? "divider"
+                  : "primary.main",
+                backgroundColor: hideColumns.includes(column.id)
+                  ? "transparent"
+                  : "primary.main",
+                color: hideColumns.includes(column.id)
+                  ? "text.primary"
+                  : "white",
+                "&:hover": {
+                  backgroundColor: hideColumns.includes(column.id)
+                    ? "action.hover"
+                    : "primary.dark",
+                },
+              }}
+            >
+              <Typography variant="body2" sx={{ fontSize: "12px" }}>
+                {column.label}
+              </Typography>
+            </Box>
+          ))}
+        </Box>
+
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          sx={{ mt: 2, display: "block" }}
+        >
+          *You can choose multiple Columns to hide
+        </Typography>
+
+        <Box sx={{ mt: 2, display: "flex", justifyContent: "flex-end" }}>
+          <Button
+            variant="contained"
+            size="small"
+            onClick={() => setShowColumnPicker(false)}
+            sx={{ textTransform: "none" }}
+          >
+            Apply Now
+          </Button>
+        </Box>
+      </Box>
+    );
+  };
+
+  const StatusPicker = () => {
+    return (
+      <Box
+        sx={{
+          position: "absolute",
+          top: "100%",
+          left: 0,
+          zIndex: 1000,
+          backgroundColor: "background.paper",
+          border: "1px solid",
+          borderColor: "divider",
+          borderRadius: "8px",
+          p: 2,
+          minWidth: "450px",
+          maxWidth: "500px",
+          width: "475px",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+        }}
+      >
+        <Typography variant="subtitle1" fontWeight="medium" mb={2}>
+          Select Status
+        </Typography>
+
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 2 }}>
+          {statusOptions.map((option) => (
+            <Box
+              key={option}
+              onClick={() => setStatus(status === option ? "" : option)}
+              sx={{
+                padding: "8px 16px",
+                borderRadius: "20px",
+                cursor: "pointer",
+                border: "1px solid",
+                borderColor: status === option ? "primary.main" : "divider",
+                backgroundColor:
+                  status === option ? "primary.main" : "transparent",
+                color: status === option ? "white" : "text.primary",
+                "&:hover": {
+                  backgroundColor:
+                    status === option ? "primary.dark" : "action.hover",
+                },
+              }}
+            >
+              <Typography variant="body2" sx={{ fontSize: "12px" }}>
+                {option}
+              </Typography>
+            </Box>
+          ))}
+        </Box>
+
+        <Box sx={{ mt: 2, display: "flex", justifyContent: "flex-end" }}>
+          <Button
+            variant="contained"
+            size="small"
+            onClick={() => setShowStatusPicker(false)}
+            sx={{ textTransform: "none" }}
+          >
+            Apply Now
+          </Button>
+        </Box>
+      </Box>
+    );
+  };
+
   const visibleColumns = columns.filter(
     (column) => !hideColumns.includes(column.id)
   );
+
+  const formatSelectedColumns = () => {
+    const hiddenCount = hideColumns.length;
+    if (hiddenCount === 0) return "Hide Columns";
+    return `${hiddenCount} hidden`;
+  };
+
+  const getFullColumnsText = () => {
+    if (hideColumns.length === 0) return "Hide Columns";
+    const hiddenColumnNames = columns
+      .filter((col) => hideColumns.includes(col.id))
+      .map((col) => col.label);
+    return `Hidden: ${hiddenColumnNames.join(", ")}`;
+  };
+
+  const formatSelectedStatus = () => {
+    if (!status) return "Status";
+    return status;
+  };
+
+  const getFullStatusText = () => {
+    if (!status) return "Status";
+    return `Selected: ${status}`;
+  };
 
   return (
     <Box sx={{ p: 0 }}>
@@ -316,34 +527,43 @@ export default function Projects() {
             borderRadius: "12px",
             px: 2,
             py: 1.5,
-            "& > *:not(:last-child)::after": {
-              content: '""',
-              width: "1px",
-              height: "32px",
-              backgroundColor: "divider",
-              marginLeft: "8px",
-            },
           }}
         >
           <IconButton
             sx={{
               color: "text.secondary",
-              padding: "4px",
+              padding: "6px",
+              border: "1px solid transparent",
+              borderRadius: "50%",
+              flexShrink: 0,
               "&:hover": {
-                backgroundColor: "action.hover",
-                color: "primary.main",
+                backgroundColor: "transparent",
+                border: "1px solid",
+                borderColor: "text.primary",
+                color: "text.primary",
               },
             }}
           >
             <FilterList />
           </IconButton>
 
+          <Box
+            sx={{ width: "1px", height: "32px", backgroundColor: "divider" }}
+          />
+
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <Typography variant="body2" color="text.secondary">
               Filter By
             </Typography>
-            <ClickAwayListener onClickAway={() => setShowDatePicker(false)}>
-              <Box sx={{ position: "relative" }}>
+          </Box>
+
+          <Box
+            sx={{ width: "1px", height: "32px", backgroundColor: "divider" }}
+          />
+
+          <ClickAwayListener onClickAway={() => setShowDatePicker(false)}>
+            <Box sx={{ position: "relative" }}>
+              <Tooltip title={getFullDateText()} placement="top">
                 <Box
                   onClick={() => setShowDatePicker(!showDatePicker)}
                   sx={{
@@ -356,59 +576,143 @@ export default function Projects() {
                     borderColor: "divider",
                     borderRadius: "8px",
                     backgroundColor: "background.paper",
+                    width: 120,
                     minWidth: 120,
+                    maxWidth: 120,
                     "&:hover": {
                       borderColor: "primary.main",
                     },
                   }}
                 >
-                  <Typography variant="body2">
-                    {selectedDate ? formatDate(selectedDate) : "Date"}
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      flex: 1,
+                    }}
+                  >
+                    {formatSelectedDates()}
                   </Typography>
-                  <KeyboardArrowDown sx={{ fontSize: 16 }} />
+                  <KeyboardArrowDown sx={{ fontSize: 16, flexShrink: 0 }} />
                 </Box>
-                {showDatePicker && <DatePicker />}
-              </Box>
-            </ClickAwayListener>
-          </Box>
+              </Tooltip>
+              {showDatePicker && <DatePicker />}
+            </Box>
+          </ClickAwayListener>
 
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Typography variant="body2" color="text.secondary">
-              Hide Columns
-            </Typography>
-            <IconButton
-              onClick={() => setShowColumnDialog(true)}
-              sx={{ color: "text.secondary" }}
-            >
-              <VisibilityOff />
-            </IconButton>
-          </Box>
+          <Box
+            sx={{ width: "1px", height: "32px", backgroundColor: "divider" }}
+          />
 
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Typography variant="body2" color="text.secondary">
-              Status
-            </Typography>
-            <FormControl size="small" sx={{ minWidth: 120 }}>
-              <Select
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-                sx={{ borderRadius: "8px" }}
-              >
-                <MenuItem value="">All</MenuItem>
-                {statusOptions.map((option) => (
-                  <MenuItem key={option} value={option}>
-                    {option}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Box>
+          <ClickAwayListener onClickAway={() => setShowColumnPicker(false)}>
+            <Box sx={{ position: "relative" }}>
+              <Tooltip title={getFullColumnsText()} placement="top">
+                <Box
+                  onClick={() => setShowColumnPicker(!showColumnPicker)}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    cursor: "pointer",
+                    padding: "8px 12px",
+                    border: "1px solid",
+                    borderColor: "divider",
+                    borderRadius: "8px",
+                    backgroundColor: "background.paper",
+                    width: 120,
+                    minWidth: 120,
+                    maxWidth: 120,
+                    "&:hover": {
+                      borderColor: "primary.main",
+                    },
+                  }}
+                >
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      flex: 1,
+                    }}
+                  >
+                    {formatSelectedColumns()}
+                  </Typography>
+                  <KeyboardArrowDown sx={{ fontSize: 16, flexShrink: 0 }} />
+                </Box>
+              </Tooltip>
+              {showColumnPicker && <ColumnPicker />}
+            </Box>
+          </ClickAwayListener>
+
+          <Box
+            sx={{ width: "1px", height: "32px", backgroundColor: "divider" }}
+          />
+
+          <ClickAwayListener onClickAway={() => setShowStatusPicker(false)}>
+            <Box sx={{ position: "relative" }}>
+              <Tooltip title={getFullStatusText()} placement="top">
+                <Box
+                  onClick={() => setShowStatusPicker(!showStatusPicker)}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    cursor: "pointer",
+                    padding: "8px 12px",
+                    border: "1px solid",
+                    borderColor: "divider",
+                    borderRadius: "8px",
+                    backgroundColor: "background.paper",
+                    width: 120,
+                    minWidth: 120,
+                    maxWidth: 120,
+                    "&:hover": {
+                      borderColor: "primary.main",
+                    },
+                  }}
+                >
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      flex: 1,
+                    }}
+                  >
+                    {formatSelectedStatus()}
+                  </Typography>
+                  <KeyboardArrowDown sx={{ fontSize: 16, flexShrink: 0 }} />
+                </Box>
+              </Tooltip>
+              {showStatusPicker && <StatusPicker />}
+            </Box>
+          </ClickAwayListener>
+
+          <Box
+            sx={{ width: "1px", height: "32px", backgroundColor: "divider" }}
+          />
 
           <Button
             variant="text"
             startIcon={<Refresh />}
             onClick={handleReset}
-            sx={{ color: "error.main", textTransform: "none" }}
+            sx={{
+              color: "error.main",
+              borderRedius: "16px",
+              textTransform: "none",
+              "&:focus": {
+                outline: "none",
+                boxShadow: "none",
+              },
+              "&:focus-visible": {
+                outline: "none",
+                boxShadow: "none",
+              },
+            }}
           >
             Reset Filter
           </Button>
@@ -418,6 +722,7 @@ export default function Projects() {
           <Button
             variant="contained"
             startIcon={<Add />}
+            onClick={() => navigate("/projects/add")}
             sx={{
               backgroundColor: "primary.main",
               borderRadius: "8px",
@@ -434,7 +739,7 @@ export default function Projects() {
         sx={{
           borderRadius: "12px",
           overflow: "hidden",
-          height: "calc(100vh - 280px)",
+          height: "calc(100vh - 265px)",
           display: "flex",
           flexDirection: "column",
         }}
@@ -559,7 +864,9 @@ export default function Projects() {
               {paginatedData.map((row) => (
                 <TableRow
                   key={row.id}
+                  onClick={() => navigate(`/projects/edit/${row.id}`)}
                   sx={{
+                    cursor: "pointer",
                     "&:hover": {
                       backgroundColor: "action.hover",
                     },

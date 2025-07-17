@@ -72,6 +72,39 @@ export default function CustomThemeProvider({ children }) {
           },
         },
       },
+      MuiTextField: {
+        styleOverrides: {
+          root: {
+            "& .MuiInputBase-input": {
+              color: mode === "dark" ? "#ffffff" : "#202224",
+            },
+            "& .MuiInputBase-input::placeholder": {
+              color: mode === "dark" ? "#9ca3af" : "#6b7280",
+              opacity: 1,
+            },
+          },
+        },
+      },
+      MuiSelect: {
+        styleOverrides: {
+          select: {
+            color: mode === "dark" ? "#ffffff" : "#202224",
+            "&.MuiSelect-select[aria-expanded='false']": {
+              color: mode === "dark" ? "#9ca3af" : "#6b7280",
+            },
+          },
+        },
+      },
+      MuiMenuItem: {
+        styleOverrides: {
+          root: {
+            "&.Mui-disabled": {
+              color: mode === "dark" ? "#9ca3af" : "#6b7280",
+              opacity: 1,
+            },
+          },
+        },
+      },
     },
   });
 
