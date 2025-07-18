@@ -1,6 +1,8 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
+import { addEstimate, updateEstimate } from "../redux/slices/estimatesSlice";
 import {
   Box,
   Typography,
@@ -10,12 +12,23 @@ import {
   IconButton,
   Divider,
   Collapse,
+  FormControl,
+  Select,
+  MenuItem,
+  FormHelperText,
 } from "@mui/material";
 import { Add, Remove, ExpandMore, ExpandLess } from "@mui/icons-material";
 
 export default function AddEstimate({ isEditing = false, estimateData = null }) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { t } = useTranslation();
+
+  const [formData, setFormData] = useState({
+    project: "",
+    client: "",
+    status: "Created",
+  });
 
   const [sections, setSections] = useState([
     {
@@ -33,26 +46,6 @@ export default function AddEstimate({ isEditing = false, estimateData = null }) 
           margin: "",
           total: 0,
         },
-        {
-          id: 2,
-          title: "",
-          description: "",
-          unit: "",
-          quantity: "",
-          price: "",
-          margin: "",
-          total: 0,
-        },
-        {
-          id: 3,
-          title: "",
-          description: "",
-          unit: "",
-          quantity: "",
-          price: "",
-          margin: "",
-          total: 0,
-        },
       ],
     },
   ]);
@@ -61,14 +54,32 @@ export default function AddEstimate({ isEditing = false, estimateData = null }) 
 
   // Load data if editing
   useEffect(() => {
-    if (isEditing && estimateData && estimateData.sections) {
-      setSections(estimateData.sections);
+    if (isEditing && estimateData) {
+      setFormData({
+        project: estimateData.project || "",
+        client: estimateData.client || "",
+        status: estimateData.status || "Created",
+      });
+      if (estimateData.sections) {
+        setSections(estimateData.sections);
+      }
     }
   }, [isEditing, estimateData]);
 
   // Validation function
   const validateForm = () => {
     const newErrors = {};
+
+    // Validate form data
+    if (!formData.project.trim()) {
+      newErrors.project = t("projectRequired");
+    }
+    if (!formData.client.trim()) {
+      newErrors.client = t("clientRequired");
+    }
+    if (!formData.status) {
+      newErrors.status = t("statusRequired");
+    }
 
     sections.forEach((section, sectionIndex) => {
       // Validate section title
@@ -92,6 +103,22 @@ export default function AddEstimate({ isEditing = false, estimateData = null }) 
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  // Handle form data changes
+  const handleFormDataChange = (field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+    
+    // Clear error when user starts typing
+    if (errors[field]) {
+      setErrors(prev => ({
+        ...prev,
+        [field]: ""
+      }));
+    }
   };
 
   // Clear error when user starts typing
@@ -276,10 +303,33 @@ export default function AddEstimate({ isEditing = false, estimateData = null }) 
 
   const totals = calculateTotals();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (validateForm()) {
-      console.log(isEditing ? "Updating estimate:" : "Submitting estimate:", sections);
-      navigate("/estimations");
+      try {
+        if (isEditing) {
+          const updatedEstimate = {
+            ...estimateData,
+            ...formData,
+            sections,
+            lastModified: new Date().toLocaleDateString(),
+          };
+          await dispatch(updateEstimate({ id: estimateData.id, estimateData: updatedEstimate })).unwrap();
+        } else {
+          // Create a proper estimate object with all required fields
+          const newEstimateData = {
+            ...formData,
+            sections,
+            contact: "9876543210",
+            manager: "Sarah Williams",
+            staff: "Staff 1",
+            email: "new.project@example.com",
+          };
+          await dispatch(addEstimate(newEstimateData)).unwrap();
+        }
+        navigate("/estimations");
+      } catch (error) {
+        console.error("Failed to save estimate:", error);
+      }
     }
   };
 
@@ -301,11 +351,117 @@ export default function AddEstimate({ isEditing = false, estimateData = null }) 
         </Typography>
       )}
 
+      {/* Form Fields */}
+      <Paper sx={{ p: 3, mb: 2, borderRadius: "12px" }}>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: 3,
+            mb: 3,
+          }}
+        >
+          {/* Project */}
+          <Box>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              mb={1}
+              sx={{ fontSize: "14px" }}
+            >
+              {t("project")}
+            </Typography>
+            <TextField
+              fullWidth
+              size="small"
+              placeholder={t("enterProject")}
+              value={formData.project}
+              onChange={(e) => handleFormDataChange("project", e.target.value)}
+              error={!!errors.project}
+              helperText={errors.project}
+              sx={{
+                backgroundColor: "background.dashboard",
+                "& .MuiOutlinedInput-notchedOutline": { 
+                  border: errors.project ? "1px solid" : "none",
+                  borderColor: errors.project ? "error.main" : "transparent"
+                },
+                "& .MuiInputBase-root": { height: "40px" },
+              }}
+            />
+          </Box>
+
+          {/* Client */}
+          <Box>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              mb={1}
+              sx={{ fontSize: "14px" }}
+            >
+              {t("client")}
+            </Typography>
+            <TextField
+              fullWidth
+              size="small"
+              placeholder={t("enterClient")}
+              value={formData.client}
+              onChange={(e) => handleFormDataChange("client", e.target.value)}
+              error={!!errors.client}
+              helperText={errors.client}
+              sx={{
+                backgroundColor: "background.dashboard",
+                "& .MuiOutlinedInput-notchedOutline": { 
+                  border: errors.client ? "1px solid" : "none",
+                  borderColor: errors.client ? "error.main" : "transparent"
+                },
+                "& .MuiInputBase-root": { height: "40px" },
+              }}
+            />
+          </Box>
+
+          {/* Status */}
+          <Box>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              mb={1}
+              sx={{ fontSize: "14px" }}
+            >
+              {t("status")}
+            </Typography>
+            <FormControl fullWidth error={!!errors.status}>
+              <Select
+                value={formData.status}
+                onChange={(e) => handleFormDataChange("status", e.target.value)}
+                size="small"
+                sx={{
+                  backgroundColor: "background.dashboard",
+                  "& .MuiOutlinedInput-notchedOutline": { 
+                    border: errors.status ? "1px solid" : "none",
+                    borderColor: errors.status ? "error.main" : "transparent"
+                  },
+                  height: "40px",
+                }}
+              >
+                <MenuItem value="Created">{t("created")}</MenuItem>
+                <MenuItem value="Processing">{t("processing")}</MenuItem>
+                <MenuItem value="Rejected">{t("rejected")}</MenuItem>
+                <MenuItem value="On Hold">{t("onhold")}</MenuItem>
+                <MenuItem value="In Transit">{t("intransit")}</MenuItem>
+              </Select>
+              {errors.status && (
+                <FormHelperText>{errors.status}</FormHelperText>
+              )}
+            </FormControl>
+          </Box>
+        </Box>
+      </Paper>
+
       <Paper
         sx={{
           borderRadius: "12px",
           overflow: "hidden",
-          minHeight: "calc(100vh - 200px)",
+          minHeight: "calc(100vh - 335px)",
           p: 0,
         }}
       >
@@ -689,7 +845,7 @@ export default function AddEstimate({ isEditing = false, estimateData = null }) 
         <Box
           sx={{
             display: "flex",
-            justifyContent: "center",
+            justifyContent: "flex-end",
             gap: 2,
             p: 3,
             borderTop: "1px solid",

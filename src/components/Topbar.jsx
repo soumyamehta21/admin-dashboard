@@ -19,7 +19,7 @@ import {
   LightMode,
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleTheme } from "../redux/slices/themeSlice";
+import { toggleTheme, toggleSidebar } from "../redux/slices/themeSlice";
 import { useTranslation } from "react-i18next";
 
 export default function Topbar() {
@@ -31,6 +31,10 @@ export default function Topbar() {
     const newLanguage = event.target.value;
     i18n.changeLanguage(newLanguage);
     localStorage.setItem("language", newLanguage);
+  };
+
+  const handleSidebarToggle = () => {
+    dispatch(toggleSidebar());
   };
 
   const getLanguageFlag = (lang) => {
@@ -63,7 +67,7 @@ export default function Topbar() {
     >
       <Toolbar disableGutters sx={{ justifyContent: "space-between" }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <IconButton edge="start" size="small" sx={{ ml: 1 }}>
+          <IconButton edge="start" size="small" sx={{ ml: 1 }} onClick={handleSidebarToggle}>
             <MenuIcon />
           </IconButton>
 

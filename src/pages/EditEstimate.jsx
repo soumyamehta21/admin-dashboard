@@ -3,23 +3,29 @@ import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Box, Typography } from "@mui/material";
 import AddEstimate from "./AddEstimate";
-import { estimatesData } from "../data/constants";
+import { useDispatch, useSelector } from "react-redux";
+import { updateEstimate } from "../redux/slices/estimatesSlice";
 
 export default function EditEstimate() {
   const { id } = useParams();
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+  
+  const { items: estimates } = useSelector(state => state.estimates);
+  
   const [estimate, setEstimate] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchedEstimate = estimatesData.find(
+    const fetchedEstimate = estimates.find(
       (estimate) => estimate.id === parseInt(id)
     );
     
     if (fetchedEstimate) {
+      // Use the actual estimate data if it has sections, otherwise create default structure
       const detailedEstimate = {
         ...fetchedEstimate,
-        sections: [
+        sections: fetchedEstimate.sections || [
           {
             id: 1,
             title: `Section for ${fetchedEstimate.project}`,
@@ -35,16 +41,6 @@ export default function EditEstimate() {
                 margin: "15",
                 total: 575,
               },
-              {
-                id: 2,
-                title: "Item 2",
-                description: "Description for item 2",
-                unit: "pcs",
-                quantity: "5",
-                price: "100",
-                margin: "10",
-                total: 550,
-              },
             ],
           },
         ],
@@ -54,7 +50,7 @@ export default function EditEstimate() {
     }
     
     setLoading(false);
-  }, [id]);
+  }, [id, estimates]);
 
   if (loading) {
     return <Box>Loading...</Box>;

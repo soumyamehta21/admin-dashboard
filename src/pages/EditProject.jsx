@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
+import { updateProject } from "../redux/slices/projectsSlice";
 import {
   Box,
   Typography,
@@ -20,8 +22,12 @@ import { projectsData } from "../data/projectsData";
 
 export default function EditProject() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { id } = useParams();
   const { t } = useTranslation();
+  
+  const { items: projects } = useSelector(state => state.projects);
+
   const [formData, setFormData] = useState({
     customer: "",
     refNumber: "",
@@ -42,7 +48,7 @@ export default function EditProject() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
   useEffect(() => {
-    const project = projectsData.find((p) => p.id === parseInt(id));
+    const project = projects.find((p) => p.id === parseInt(id));
     if (project) {
       setFormData({
         customer: project.customer || "",
@@ -51,15 +57,15 @@ export default function EditProject() {
         projectNumber: project.projectNumber || "",
         areaLocation: project.areaLocation || "",
         address: project.address || "",
-        dueDate: "",
-        contact: "",
-        manager: "",
-        staff: "",
+        dueDate: project.dueDate || "",
+        contact: project.contact || "",
+        manager: project.manager || "",
+        staff: project.staff || "",
         status: project.status || "",
-        email: "",
+        email: project.email || "",
       });
     }
-  }, [id]);
+  }, [id, projects]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -272,10 +278,14 @@ export default function EditProject() {
     );
   };
 
-  const handleUpdateProject = () => {
+  const handleUpdateProject = async () => {
     if (validateForm()) {
-      console.log("Updating project:", formData);
-      navigate("/projects");
+      try {
+        await dispatch(updateProject({ id: parseInt(id), projectData: formData })).unwrap();
+        navigate("/projects");
+      } catch (error) {
+        console.error("Failed to update project:", error);
+      }
     }
   };
 
@@ -643,7 +653,7 @@ export default function EditProject() {
             </Typography>
             <FormControl fullWidth error={!!errors.status}>
               <Select
-                value={formData.status}
+                value={t(formData.status)}
                 onChange={(e) => handleInputChange("status", e.target.value)}
                 displayEmpty
                 size="small"

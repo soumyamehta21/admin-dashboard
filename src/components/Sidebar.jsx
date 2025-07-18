@@ -16,7 +16,7 @@ import {
   Logout,
 } from "@mui/icons-material";
 import { NavLink, useLocation } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../redux/slices/authSlice";
 import { useTranslation } from "react-i18next";
 
@@ -45,30 +45,45 @@ export default function Sidebar() {
   const location = useLocation();
   const dispatch = useDispatch();
   const { t } = useTranslation();
+  const sidebarOpen = useSelector((state) => state.theme.sidebarOpen);
 
   return (
     <Drawer
       variant="permanent"
       anchor="left"
       sx={{
-        width: 240,
+        width: sidebarOpen ? 240 : 0,
         flexShrink: 0,
+        transition: "width 0.3s ease-in-out",
         [`& .MuiDrawer-paper`]: {
-          width: 240,
+          width: sidebarOpen ? 240 : 0,
           boxSizing: "border-box",
           backgroundColor: "background.default",
-          borderRight: "1px solid",
-          borderColor: "background.default",
+          borderRight: sidebarOpen ? "1px solid" : "none",
+          borderColor: "divider",
           paddingTop: 2,
+          transition: "width 0.3s ease-in-out",
+          overflow: "hidden",
+          whiteSpace: "nowrap",
         },
       }}
     >
-      <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+      <Box sx={{ 
+        display: "flex", 
+        flexDirection: "column", 
+        height: "100%",
+        minWidth: 240,
+        opacity: sidebarOpen ? 1 : 0,
+        transition: "opacity 0.2s ease-in-out",
+      }}>
         <Box sx={{ px: 3, mb: 3 }}>
           <Typography
             variant="h6"
             fontWeight="bold"
-            style={{ justifyContent: "center", display: "flex" }}
+            style={{ 
+              justifyContent: "center", 
+              display: "flex",
+            }}
           >
             LO
             <Box component="span" sx={{ color: "primary.main" }}>
@@ -105,6 +120,8 @@ export default function Sidebar() {
                       borderRadius: "8px",
                       mx: 2,
                       mb: 0.5,
+                      minHeight: 48,
+                      px: 2.5,
                       "&:hover": {
                         backgroundColor: isActive
                           ? "primary.main"
@@ -112,16 +129,16 @@ export default function Sidebar() {
                       },
                     }}
                   >
-                    <Box
-                      display={"flex"}
-                      justifyContent={"center"}
-                      alignItems={"center"}
-                      paddingLeft="16px"
-                      gap={"12px"}
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: 3,
+                        justifyContent: "center",
+                      }}
                     >
-                      <Box display={"flex"}>{item.icon}</Box>
-                      <Box display={"flex"}>{t(item.label)}</Box>
-                    </Box>
+                      {item.icon}
+                    </ListItemIcon>
+                    <ListItemText primary={t(item.label)} />
                   </ListItemButton>
                 </NavLink>
               </ListItem>
@@ -138,8 +155,18 @@ export default function Sidebar() {
                 dispatch(logout());
                 alert("Logged out");
               }}
+              sx={{
+                minHeight: 48,
+                px: 2.5,
+              }}
             >
-              <ListItemIcon>
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: 3,
+                  justifyContent: "center",
+                }}
+              >
                 <Logout />
               </ListItemIcon>
               <ListItemText primary={t("logout")} />

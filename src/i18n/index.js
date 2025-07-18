@@ -160,6 +160,9 @@ const resources = {
       itemTitleRequired: "Item name is required",
       quantityRequired: "Quantity is required and must be greater than 0",
       priceRequired: "Price is required and must be greater than 0",
+      update: "Update",
+      enterProject: "Enter project",
+      enterClient: "Enter client",
     },
   },
   fr: {

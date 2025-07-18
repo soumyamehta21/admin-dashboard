@@ -9,6 +9,7 @@ const themeSlice = createSlice({
   name: "theme",
   initialState: {
     mode: getInitialTheme(),
+    sidebarOpen: true,
   },
   reducers: {
     toggleTheme: (state) => {
@@ -19,8 +20,15 @@ const themeSlice = createSlice({
       state.mode = action.payload;
       localStorage.setItem("themeMode", state.mode);
     },
+    toggleSidebar: (state) => {
+      state.sidebarOpen = !state.sidebarOpen;
+    },
+    setSidebarOpen: (state, action) => {
+      state.sidebarOpen = action.payload;
+    },
   },
 });
 
-export const { toggleTheme, setTheme } = themeSlice.actions;
+export const { toggleTheme, setTheme, toggleSidebar, setSidebarOpen } =
+  themeSlice.actions;
 export default themeSlice.reducer;

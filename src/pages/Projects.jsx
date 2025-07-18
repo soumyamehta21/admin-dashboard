@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 import {
   Box,
   Typography,
@@ -36,13 +37,15 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "@mui/icons-material";
-import { projectsData } from "../data/projectsData";
 
 export default function Projects() {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  
+  const { items: projectsData } = useSelector(state => state.projects);
+  
   const [filterBy, setFilterBy] = useState("Date");
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [hideColumns, setHideColumns] = useState([]);
   const [showColumnDialog, setShowColumnDialog] = useState(false);
@@ -59,24 +62,24 @@ export default function Projects() {
     { id: "refNumber", label: t("refNumber") },
     { id: "projectReference", label: "PROJECT REFERENCE" },
     { id: "projectLocation", label: "PROJECT LOCATION" },
+    { id: "dueDate", label: t("dueDate") },
     { id: "status", label: t("status") },
   ];
 
   const statusOptions = [
-    t("created"),
-    t("processing"),
-    t("rejected"),
-    t("onhold"),
-    t("intransit"),
-    t("delivered"),
-    t("pending"),
-    t("completed"),
+    {value: "created", label: t("created")},
+    {value: "processing", label: t("processing")},
+    {value: "rejected", label: t("rejected")},
+    {value: "onhold", label: t("onhold")},
+    {value: "intransit", label: t("intransit")},
+    {value: "delivered", label: t("delivered")},
+    {value: "pending", label: t("pending")},
+    {value: "completed", label: t("completed")},
   ];
 
   const filteredData = useMemo(() => {
     let filtered = projectsData;
 
-    // Search filter
     if (searchTerm) {
       filtered = filtered.filter(
         (item) =>
@@ -85,17 +88,31 @@ export default function Projects() {
           item.projectName.toLowerCase().includes(searchTerm.toLowerCase()) ||
           item.projectNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
           item.areaLocation.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          item.address.toLowerCase().includes(searchTerm.toLowerCase())
+          item.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          (item.dueDate && item.dueDate.includes(searchTerm))
       );
     }
 
-    // Status filter
-    if (status) {
-      filtered = filtered.filter((item) => item.status === status);
+    if (status.length > 0) {
+      filtered = filtered.filter((item) => status.includes(item.status));
+    }
+
+    // Fix date filtering logic
+    if (selectedDates.length > 0) {
+      filtered = filtered.filter((item) => {
+        if (!item.dueDate) return false;
+        const itemDate = new Date(item.dueDate);
+        
+        return selectedDates.some((selectedDate) => {
+          return itemDate.getFullYear() === selectedDate.getFullYear() &&
+                 itemDate.getMonth() === selectedDate.getMonth() &&
+                 itemDate.getDate() === selectedDate.getDate();
+        });
+      });
     }
 
     return filtered;
-  }, [searchTerm, status]);
+  }, [searchTerm, status, projectsData, selectedDates]);
 
   const paginatedData = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -106,21 +123,24 @@ export default function Projects() {
 
   const handleReset = () => {
     setFilterBy("Date");
-    setStatus("");
+    setStatus([]);
     setSearchTerm("");
     setSelectedDates([]);
     setCurrentPage(1);
+    setShowDatePicker(false);
   };
 
   const handleDateSelect = (date) => {
     setSelectedDates((prev) => {
-      const dateString = date.toDateString();
+      // Create a new date in local timezone to avoid timezone issues
+      const localDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      const dateString = localDate.toDateString();
       const isSelected = prev.some((d) => d.toDateString() === dateString);
 
       if (isSelected) {
         return prev.filter((d) => d.toDateString() !== dateString);
       } else {
-        return [...prev, date];
+        return [...prev, localDate];
       }
     });
   };
@@ -180,12 +200,10 @@ export default function Projects() {
 
     const days = [];
 
-    // Add empty cells for days before the first day of the month
     for (let i = 0; i < startingDayOfWeek; i++) {
       days.push(null);
     }
 
-    // Add days of the month
     for (let day = 1; day <= daysInMonth; day++) {
       days.push(new Date(year, month, day));
     }
@@ -434,29 +452,43 @@ export default function Projects() {
         <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 2 }}>
           {statusOptions.map((option) => (
             <Box
-              key={option}
-              onClick={() => setStatus(status === option ? "" : option)}
+              key={option?.value}
+              onClick={() => {
+                setStatus(prev => 
+                  prev.includes(option?.value) 
+                    ? prev.filter(s => s !== option?.value)
+                    : [...prev, option?.value]
+                );
+              }}
               sx={{
                 padding: "8px 16px",
                 borderRadius: "20px",
                 cursor: "pointer",
                 border: "1px solid",
-                borderColor: status === option ? "primary.main" : "divider",
+                borderColor: status.includes(option?.value) ? "primary.main" : "divider",
                 backgroundColor:
-                  status === option ? "primary.main" : "transparent",
-                color: status === option ? "white" : "text.primary",
+                  status.includes(option?.value) ? "primary.main" : "transparent",
+                color: status.includes(option?.value) ? "white" : "text.primary",
                 "&:hover": {
                   backgroundColor:
-                    status === option ? "primary.dark" : "action.hover",
+                    status.includes(option?.value) ? "primary.dark" : "action.hover",
                 },
               }}
             >
               <Typography variant="body2" sx={{ fontSize: "12px" }}>
-                {option}
+                {option.label}
               </Typography>
             </Box>
           ))}
         </Box>
+
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          sx={{ mt: 2, display: "block" }}
+        >
+          *You can choose multiple status
+        </Typography>
 
         <Box sx={{ mt: 2, display: "flex", justifyContent: "flex-end" }}>
           <Button
@@ -491,13 +523,16 @@ export default function Projects() {
   };
 
   const formatSelectedStatus = () => {
-    if (!status) return t("status");
-    return status;
+    if (status.length === 0) return t("status");
+    if (status.length === 1) return t(status[0]);
+    return `${status.length} ${t("selected")}`;
   };
 
   const getFullStatusText = () => {
-    if (!status) return t("status");
-    return `${t("selected")}: ${status}`;
+    if (status.length === 0) return t("status");
+    if (status.length === 1) return `${t("selected")}: ${t(status[0])}`;
+    const statusLabels = status.map(s => t(s));
+    return `${t("selected")}: ${statusLabels.join(", ")}`;
   };
 
   return (
@@ -958,6 +993,17 @@ export default function Projects() {
                           </Typography>
                         </Box>
                       </Box>
+                    </TableCell>
+                  )}
+                  {!hideColumns.includes("dueDate") && (
+                    <TableCell>
+                      <Typography variant="body2" color="text.secondary">
+                        {row.dueDate ? new Date(row.dueDate).toLocaleDateString("en-GB", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        }) : "No date"}
+                      </Typography>
                     </TableCell>
                   )}
                   {!hideColumns.includes("status") && (

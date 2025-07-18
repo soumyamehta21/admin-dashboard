@@ -8,6 +8,39 @@ export const estimatesData = [
     createdDate: "04 Sep 2019",
     lastModified: "12-Jan-2022",
     status: "Created",
+    contact: "9876543210",
+    manager: "Sarah Williams",
+    staff: "Staff 1",
+    email: "christine.brooks@example.com",
+    sections: [
+      {
+        id: 1,
+        title: "Development Phase",
+        expanded: true,
+        items: [
+          {
+            id: 1,
+            title: "Frontend Development",
+            description: "React.js application development",
+            unit: "hrs",
+            quantity: "40",
+            price: "50",
+            margin: "15",
+            total: 2300,
+          },
+          {
+            id: 2,
+            title: "Backend Development",
+            description: "Node.js API development",
+            unit: "hrs",
+            quantity: "30",
+            price: "60",
+            margin: "10",
+            total: 1980,
+          },
+        ],
+      },
+    ],
   },
   {
     id: 2,
@@ -17,6 +50,29 @@ export const estimatesData = [
     createdDate: "28 May 2019",
     lastModified: "29-Jul-2024",
     status: "Processing",
+    contact: "9876543211",
+    manager: "Robert Johnson",
+    staff: "Staff 2",
+    email: "rosie.pearson@example.com",
+    sections: [
+      {
+        id: 1,
+        title: "Design Phase",
+        expanded: true,
+        items: [
+          {
+            id: 1,
+            title: "UI/UX Design",
+            description: "Complete application design",
+            unit: "hrs",
+            quantity: "25",
+            price: "45",
+            margin: "20",
+            total: 1350,
+          },
+        ],
+      },
+    ],
   },
   {
     id: 3,
@@ -26,6 +82,29 @@ export const estimatesData = [
     createdDate: "23 Nov 2019",
     lastModified: "16-Mar-2022",
     status: "Rejected",
+    contact: "9876543212",
+    manager: "Isabella Anderson",
+    staff: "Staff 3",
+    email: "darrell.caldwell@example.com",
+    sections: [
+      {
+        id: 1,
+        title: "Testing Phase",
+        expanded: true,
+        items: [
+          {
+            id: 1,
+            title: "Quality Assurance",
+            description: "Complete application testing",
+            unit: "hrs",
+            quantity: "20",
+            price: "40",
+            margin: "15",
+            total: 920,
+          },
+        ],
+      },
+    ],
   },
   {
     id: 4,
@@ -35,6 +114,29 @@ export const estimatesData = [
     createdDate: "05 Feb 2019",
     lastModified: "10-Dec-2021",
     status: "Created",
+    contact: "9876543213",
+    manager: "Sarah Williams",
+    staff: "Staff 1",
+    email: "gilbert.johnston@example.com",
+    sections: [
+      {
+        id: 1,
+        title: "Implementation Phase",
+        expanded: true,
+        items: [
+          {
+            id: 1,
+            title: "System Setup",
+            description: "Initial system configuration",
+            unit: "hrs",
+            quantity: "15",
+            price: "55",
+            margin: "12",
+            total: 924,
+          },
+        ],
+      },
+    ],
   },
   {
     id: 5,
@@ -44,6 +146,29 @@ export const estimatesData = [
     createdDate: "29 Jul 2019",
     lastModified: "21-Mar-2022",
     status: "Processing",
+    contact: "9876543214",
+    manager: "Robert Johnson",
+    staff: "Staff 2",
+    email: "alan.cain@example.com",
+    sections: [
+      {
+        id: 1,
+        title: "Analysis Phase",
+        expanded: true,
+        items: [
+          {
+            id: 1,
+            title: "Requirements Analysis",
+            description: "Detailed requirements gathering",
+            unit: "hrs",
+            quantity: "35",
+            price: "45",
+            margin: "18",
+            total: 1858.5,
+          },
+        ],
+      },
+    ],
   },
   {
     id: 6,
@@ -53,6 +178,29 @@ export const estimatesData = [
     createdDate: "15 Aug 2019",
     lastModified: "20-Apr-2023",
     status: "Created",
+    contact: "9876543215",
+    manager: "Isabella Anderson",
+    staff: "Staff 3",
+    email: "alfred.murray@example.com",
+    sections: [
+      {
+        id: 1,
+        title: "Development Phase",
+        expanded: true,
+        items: [
+          {
+            id: 1,
+            title: "Mobile App Development",
+            description: "Cross-platform mobile application",
+            unit: "hrs",
+            quantity: "50",
+            price: "65",
+            margin: "20",
+            total: 3900,
+          },
+        ],
+      },
+    ],
   },
   {
     id: 7,
@@ -62,6 +210,29 @@ export const estimatesData = [
     createdDate: "21 Dec 2019",
     lastModified: "16-Nov-2023",
     status: "Processing",
+    contact: "9876543216",
+    manager: "Sarah Williams",
+    staff: "Staff 1",
+    email: "maggie.sullivan@example.com",
+    sections: [
+      {
+        id: 1,
+        title: "Consultation Phase",
+        expanded: true,
+        items: [
+          {
+            id: 1,
+            title: "Business Consultation",
+            description: "Strategic business planning",
+            unit: "hrs",
+            quantity: "20",
+            price: "75",
+            margin: "25",
+            total: 1875,
+          },
+        ],
+      },
+    ],
   },
   {
     id: 8,
@@ -71,6 +242,29 @@ export const estimatesData = [
     createdDate: "30 Apr 2019",
     lastModified: "01-May-2023",
     status: "On Hold",
+    contact: "9876543217",
+    manager: "Robert Johnson",
+    staff: "Staff 2",
+    email: "rosie.todd@example.com",
+    sections: [
+      {
+        id: 1,
+        title: "Research Phase",
+        expanded: true,
+        items: [
+          {
+            id: 1,
+            title: "Market Research",
+            description: "Comprehensive market analysis",
+            unit: "hrs",
+            quantity: "25",
+            price: "40",
+            margin: "15",
+            total: 1150,
+          },
+        ],
+      },
+    ],
   },
   {
     id: 9,
@@ -80,6 +274,29 @@ export const estimatesData = [
     createdDate: "09 Jan 2019",
     lastModified: "23-Oct-2022",
     status: "In Transit",
+    contact: "9876543218",
+    manager: "Isabella Anderson",
+    staff: "Staff 3",
+    email: "dollie.hines@example.com",
+    sections: [
+      {
+        id: 1,
+        title: "Deployment Phase",
+        expanded: true,
+        items: [
+          {
+            id: 1,
+            title: "System Deployment",
+            description: "Production system deployment",
+            unit: "hrs",
+            quantity: "30",
+            price: "70",
+            margin: "22",
+            total: 2562,
+          },
+        ],
+      },
+    ],
   },
 ];
 

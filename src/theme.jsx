@@ -53,6 +53,7 @@ const darkPalette = {
 
 export default function CustomThemeProvider({ children }) {
   const mode = useSelector((state) => state.theme.mode);
+  
   const theme = createTheme({
     palette: mode === "dark" ? darkPalette : lightPalette,
     components: {

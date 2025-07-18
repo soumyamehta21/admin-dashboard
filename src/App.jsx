@@ -1,4 +1,5 @@
 import { Route, Routes } from "react-router-dom";
+import { useSelector } from "react-redux";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -11,7 +12,7 @@ import Estimates from "./pages/Estimates";
 import AddEstimate from "./pages/AddEstimate";
 import EditEstimate from "./pages/EditEstimate";
 
-function App() {
+function App() {  
   return (
     <Routes>
       <Route

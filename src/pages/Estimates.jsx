@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 import {
   Box,
   Typography,
@@ -17,11 +18,13 @@ import {
   Pagination,
 } from "@mui/material";
 import { Add, Edit } from "@mui/icons-material";
-import { estimatesData } from "../data/constants";
 
 export default function Estimates() {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  
+  const { items: estimatesData } = useSelector(state => state.estimates);
+  
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
@@ -38,7 +41,7 @@ export default function Estimates() {
   const paginatedData = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     return estimatesData.slice(startIndex, startIndex + itemsPerPage);
-  }, [currentPage]);
+  }, [currentPage, estimatesData]);
 
   const totalPages = Math.ceil(estimatesData.length / itemsPerPage);
 
@@ -231,8 +234,6 @@ export default function Estimates() {
             onChange={(event, value) => setCurrentPage(value)}
             color="primary"
             size="small"
-            showFirstButton
-            showLastButton
           />
         </Box>
       </Paper>
