@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Box,
   Typography,
@@ -18,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function AddProject() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     customer: "",
     refNumber: "",
@@ -40,30 +42,28 @@ export default function AddProject() {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.customer) newErrors.customer = "Customer is required";
-    if (!formData.refNumber)
-      newErrors.refNumber = "Reference number is required";
-    if (!formData.projectName)
-      newErrors.projectName = "Project name is required";
+    if (!formData.customer) newErrors.customer = t("customerRequired");
+    if (!formData.refNumber) newErrors.refNumber = t("refNumberRequired");
+    if (!formData.projectName) newErrors.projectName = t("projectNameRequired");
     if (!formData.projectNumber)
-      newErrors.projectNumber = "Project number is required";
+      newErrors.projectNumber = t("projectNumberRequired");
     if (!formData.areaLocation)
-      newErrors.areaLocation = "Area location is required";
-    if (!formData.address) newErrors.address = "Address is required";
-    if (!formData.dueDate) newErrors.dueDate = "Due date is required";
-    if (!formData.contact) newErrors.contact = "Contact is required";
-    if (!formData.manager) newErrors.manager = "Manager is required";
-    if (!formData.staff) newErrors.staff = "Staff is required";
-    if (!formData.status) newErrors.status = "Status is required";
+      newErrors.areaLocation = t("areaLocationRequired");
+    if (!formData.address) newErrors.address = t("addressRequired");
+    if (!formData.dueDate) newErrors.dueDate = t("dueDateRequired");
+    if (!formData.contact) newErrors.contact = t("contactRequired");
+    if (!formData.manager) newErrors.manager = t("managerRequired");
+    if (!formData.staff) newErrors.staff = t("staffRequired");
+    if (!formData.status) newErrors.status = t("statusRequired");
 
     if (!formData.email) {
-      newErrors.email = "Email is required";
+      newErrors.email = t("emailRequired");
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email is invalid";
+      newErrors.email = t("emailInvalid");
     }
 
     if (!/^\d{10}$/.test(formData.contact)) {
-      newErrors.contact = "Contact must be 10 digits";
+      newErrors.contact = t("contactInvalid");
     }
 
     setErrors(newErrors);
@@ -271,7 +271,7 @@ export default function AddProject() {
         color="text.main"
         sx={{ fontSize: "1.5rem" }}
       >
-        Add New Project
+        {t("addNewProject")}
       </Typography>
 
       <Box
@@ -303,7 +303,7 @@ export default function AddProject() {
               mb={1}
               sx={{ fontSize: "14px" }}
             >
-              Customer
+              {t("customer")}
             </Typography>
             <FormControl fullWidth error={!!errors.customer}>
               <Select
@@ -318,7 +318,7 @@ export default function AddProject() {
                 }}
               >
                 <MenuItem value="" disabled>
-                  Select customer
+                  {t("selectCustomer")}
                 </MenuItem>
                 <MenuItem value="Olivia Martin">Olivia Martin</MenuItem>
                 <MenuItem value="Michael Jones">Michael Jones</MenuItem>
@@ -338,12 +338,12 @@ export default function AddProject() {
               mb={1}
               sx={{ fontSize: "14px" }}
             >
-              Reference Number
+              {t("refNumber")}
             </Typography>
             <TextField
               fullWidth
               size="small"
-              placeholder="Enter your reference number"
+              placeholder={t("enterRefNumber")}
               value={formData.refNumber}
               onChange={(e) => handleInputChange("refNumber", e.target.value)}
               error={!!errors.refNumber}
@@ -364,12 +364,12 @@ export default function AddProject() {
               mb={1}
               sx={{ fontSize: "14px" }}
             >
-              Project Name
+              {t("projectName")}
             </Typography>
             <TextField
               fullWidth
               size="small"
-              placeholder="Enter your project name"
+              placeholder={t("enterProjectName")}
               value={formData.projectName}
               onChange={(e) => handleInputChange("projectName", e.target.value)}
               error={!!errors.projectName}
@@ -390,12 +390,12 @@ export default function AddProject() {
               mb={1}
               sx={{ fontSize: "14px" }}
             >
-              Project Number
+              {t("projectNumber")}
             </Typography>
             <TextField
               fullWidth
               size="small"
-              placeholder="Enter your project number"
+              placeholder={t("enterProjectNumber")}
               value={formData.projectNumber}
               onChange={(e) =>
                 handleInputChange("projectNumber", e.target.value)
@@ -418,12 +418,12 @@ export default function AddProject() {
               mb={1}
               sx={{ fontSize: "14px" }}
             >
-              Area Location
+              {t("areaLocation")}
             </Typography>
             <TextField
               fullWidth
               size="small"
-              placeholder="Enter your project area location"
+              placeholder={t("enterAreaLocation")}
               value={formData.areaLocation}
               onChange={(e) =>
                 handleInputChange("areaLocation", e.target.value)
@@ -446,12 +446,12 @@ export default function AddProject() {
               mb={1}
               sx={{ fontSize: "14px" }}
             >
-              Address
+              {t("address")}
             </Typography>
             <TextField
               fullWidth
               size="small"
-              placeholder="Enter your project address"
+              placeholder={t("enterAddress")}
               value={formData.address}
               onChange={(e) => handleInputChange("address", e.target.value)}
               error={!!errors.address}
@@ -472,7 +472,7 @@ export default function AddProject() {
               mb={1}
               sx={{ fontSize: "14px" }}
             >
-              Due Date
+              {t("dueDate")}
             </Typography>
             <ClickAwayListener onClickAway={() => setShowDatePicker(false)}>
               <Box sx={{ position: "relative" }}>
@@ -502,7 +502,7 @@ export default function AddProject() {
                         : "text.secondary",
                     }}
                   >
-                    {formatDisplayDate()}
+                    {formData.dueDate || t("selectDueDate")}
                   </Typography>
                   <CalendarToday
                     sx={{ color: "text.secondary", fontSize: "18px" }}
@@ -524,12 +524,12 @@ export default function AddProject() {
               mb={1}
               sx={{ fontSize: "14px" }}
             >
-              Contact
+              {t("contact")}
             </Typography>
             <TextField
               fullWidth
               size="small"
-              placeholder="Enter your contact"
+              placeholder={t("enterContact")}
               value={formData.contact}
               onChange={(e) => handleInputChange("contact", e.target.value)}
               error={!!errors.contact}
@@ -550,7 +550,7 @@ export default function AddProject() {
               mb={1}
               sx={{ fontSize: "14px" }}
             >
-              Manager
+              {t("manager")}
             </Typography>
             <FormControl fullWidth error={!!errors.manager}>
               <Select
@@ -565,7 +565,7 @@ export default function AddProject() {
                 }}
               >
                 <MenuItem value="" disabled>
-                  Select project manager
+                  {t("selectProjectManager")}
                 </MenuItem>
                 <MenuItem value="Sarah Williams">Sarah Williams</MenuItem>
                 <MenuItem value="Robert Johnson">Robert Johnson</MenuItem>
@@ -585,7 +585,7 @@ export default function AddProject() {
               mb={1}
               sx={{ fontSize: "14px" }}
             >
-              Staff
+              {t("staff")}
             </Typography>
             <FormControl fullWidth error={!!errors.staff}>
               <Select
@@ -600,7 +600,7 @@ export default function AddProject() {
                 }}
               >
                 <MenuItem value="" disabled>
-                  Select project staff
+                  {t("selectProjectStaff")}
                 </MenuItem>
                 <MenuItem value="Staff 1">Staff 1</MenuItem>
                 <MenuItem value="Staff 2">Staff 2</MenuItem>
@@ -618,7 +618,7 @@ export default function AddProject() {
               mb={1}
               sx={{ fontSize: "14px" }}
             >
-              Status
+              {t("status")}
             </Typography>
             <FormControl fullWidth error={!!errors.status}>
               <Select
@@ -633,13 +633,13 @@ export default function AddProject() {
                 }}
               >
                 <MenuItem value="" disabled>
-                  Select project status
+                  {t("selectProjectStatus")}
                 </MenuItem>
-                <MenuItem value="Completed">Completed</MenuItem>
-                <MenuItem value="Processing">Processing</MenuItem>
-                <MenuItem value="Rejected">Rejected</MenuItem>
-                <MenuItem value="On Hold">On Hold</MenuItem>
-                <MenuItem value="In Transit">In Transit</MenuItem>
+                <MenuItem value="Completed">{t("completed")}</MenuItem>
+                <MenuItem value="Processing">{t("processing")}</MenuItem>
+                <MenuItem value="Rejected">{t("rejected")}</MenuItem>
+                <MenuItem value="On Hold">{t("onhold")}</MenuItem>
+                <MenuItem value="In Transit">{t("intransit")}</MenuItem>
               </Select>
               {errors.status && (
                 <FormHelperText>{errors.status}</FormHelperText>
@@ -655,12 +655,12 @@ export default function AddProject() {
               mb={1}
               sx={{ fontSize: "14px" }}
             >
-              Email
+              {t("email")}
             </Typography>
             <TextField
               fullWidth
               size="small"
-              placeholder="Enter your email"
+              placeholder={t("enterEmail")}
               type="email"
               value={formData.email}
               onChange={(e) => handleInputChange("email", e.target.value)}
@@ -691,7 +691,7 @@ export default function AddProject() {
               height: "36px",
             }}
           >
-            Add Now
+            {t("addNow")}
           </Button>
           <Button
             variant="outlined"
@@ -706,7 +706,7 @@ export default function AddProject() {
               height: "36px",
             }}
           >
-            Cancel
+            {t("cancel")}
           </Button>
         </Box>
       </Box>

@@ -8,6 +8,7 @@ import Projects from "./pages/Projects";
 import AddProject from "./pages/AddProject";
 import EditProject from "./pages/EditProject";
 import Estimates from "./pages/Estimates";
+import AddEstimate from "./pages/AddEstimate";
 
 function App() {
   return (
@@ -67,6 +68,16 @@ function App() {
           <ProtectedRoute dynamicPath={"/login"}>
             <Dashboard>
               <Estimates />
+            </Dashboard>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/estimations/add"
+        element={
+          <ProtectedRoute dynamicPath={"/login"}>
+            <Dashboard>
+              <AddEstimate />
             </Dashboard>
           </ProtectedRoute>
         }

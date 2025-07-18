@@ -170,7 +170,7 @@ export default function Estimates() {
         <Button
           variant="contained"
           startIcon={<Add />}
-          onClick={() => navigate("/estimates/add")}
+          onClick={() => navigate("/estimations/add")}
           sx={{
             backgroundColor: "primary.main",
             borderRadius: "8px",

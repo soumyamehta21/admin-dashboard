@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   Box,
   Typography,
@@ -39,6 +40,7 @@ import { projectsData } from "../data/projectsData";
 
 export default function Projects() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [filterBy, setFilterBy] = useState("Date");
   const [status, setStatus] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
@@ -53,18 +55,22 @@ export default function Projects() {
   const itemsPerPage = 10;
 
   const columns = [
-    { id: "customer", label: "CUSTOMER" },
-    { id: "refNumber", label: "REF NUMBER" },
+    { id: "customer", label: t("customer") },
+    { id: "refNumber", label: t("refNumber") },
     { id: "projectReference", label: "PROJECT REFERENCE" },
     { id: "projectLocation", label: "PROJECT LOCATION" },
+    { id: "status", label: t("status") },
   ];
 
   const statusOptions = [
-    "Completed",
-    "Processing",
-    "Rejected",
-    "On Hold",
-    "In Transit",
+    t("created"),
+    t("processing"),
+    t("rejected"),
+    t("onhold"),
+    t("intransit"),
+    t("delivered"),
+    t("pending"),
+    t("completed"),
   ];
 
   const filteredData = useMemo(() => {
@@ -120,7 +126,7 @@ export default function Projects() {
   };
 
   const formatSelectedDates = () => {
-    if (selectedDates.length === 0) return "Date";
+    if (selectedDates.length === 0) return t("date");
     if (selectedDates.length === 1) {
       return selectedDates[0].toLocaleDateString("en-GB", {
         day: "2-digit",
@@ -128,11 +134,11 @@ export default function Projects() {
         year: "numeric",
       });
     }
-    return `${selectedDates.length} dates selected`;
+    return `${selectedDates.length} ${t("datesSelected")}`;
   };
 
   const getFullDateText = () => {
-    if (selectedDates.length === 0) return "Date";
+    if (selectedDates.length === 0) return t("date");
     if (selectedDates.length === 1) {
       return selectedDates[0].toLocaleDateString("en-GB", {
         day: "2-digit",
@@ -459,7 +465,7 @@ export default function Projects() {
             onClick={() => setShowStatusPicker(false)}
             sx={{ textTransform: "none" }}
           >
-            Apply Now
+            {t("applyNow")}
           </Button>
         </Box>
       </Box>
@@ -472,26 +478,26 @@ export default function Projects() {
 
   const formatSelectedColumns = () => {
     const hiddenCount = hideColumns.length;
-    if (hiddenCount === 0) return "Hide Columns";
-    return `${hiddenCount} hidden`;
+    if (hiddenCount === 0) return t("hideColumns");
+    return `${hiddenCount} ${t("hidden")}`;
   };
 
   const getFullColumnsText = () => {
-    if (hideColumns.length === 0) return "Hide Columns";
+    if (hideColumns.length === 0) return t("hideColumns");
     const hiddenColumnNames = columns
       .filter((col) => hideColumns.includes(col.id))
       .map((col) => col.label);
-    return `Hidden: ${hiddenColumnNames.join(", ")}`;
+    return `${t("hidden")}: ${hiddenColumnNames.join(", ")}`;
   };
 
   const formatSelectedStatus = () => {
-    if (!status) return "Status";
+    if (!status) return t("status");
     return status;
   };
 
   const getFullStatusText = () => {
-    if (!status) return "Status";
-    return `Selected: ${status}`;
+    if (!status) return t("status");
+    return `${t("selected")}: ${status}`;
   };
 
   return (
@@ -503,7 +509,7 @@ export default function Projects() {
         color="text.main"
         sx={{ fontSize: "1.5rem" }}
       >
-        Projects
+        {t("projects")}
       </Typography>
 
       {/* Filter Section */}
@@ -553,7 +559,7 @@ export default function Projects() {
 
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <Typography variant="body2" color="text.secondary">
-              Filter By
+              {t("filterBy")}
             </Typography>
           </Box>
 
@@ -714,7 +720,7 @@ export default function Projects() {
               },
             }}
           >
-            Reset Filter
+            {t("resetFilter")}
           </Button>
         </Box>
 
@@ -730,7 +736,7 @@ export default function Projects() {
               px: 3,
             }}
           >
-            Add Project
+            {t("addNewProject")}
           </Button>
         </Box>
       </Box>
@@ -954,6 +960,32 @@ export default function Projects() {
                       </Box>
                     </TableCell>
                   )}
+                  {!hideColumns.includes("status") && (
+                    <TableCell>
+                      <Chip
+                        label={t(row.status.toLowerCase())}
+                        size="small"
+                        sx={{
+                          backgroundColor:
+                            row.status === "Completed"
+                              ? "#e8f5e8"
+                              : row.status === "Processing"
+                              ? "#fff3e0"
+                              : "#ffebee",
+                          color:
+                            row.status === "Completed"
+                              ? "#2e7d32"
+                              : row.status === "Processing"
+                              ? "#f57c00"
+                              : "#d32f2f",
+                          fontWeight: 500,
+                          fontSize: "12px",
+                          height: "24px",
+                          borderRadius: "12px",
+                        }}
+                      />
+                    </TableCell>
+                  )}
                 </TableRow>
               ))}
             </TableBody>
@@ -973,9 +1005,9 @@ export default function Projects() {
           }}
         >
           <Typography variant="body2" color="text.secondary">
-            Showing {(currentPage - 1) * itemsPerPage + 1}-
-            {Math.min(currentPage * itemsPerPage, filteredData.length)} of{" "}
-            {filteredData.length}
+            {t("showing")} {(currentPage - 1) * itemsPerPage + 1}-
+            {Math.min(currentPage * itemsPerPage, filteredData.length)}{" "}
+            {t("of")} {filteredData.length}
           </Typography>
           <Pagination
             count={totalPages}
@@ -993,7 +1025,7 @@ export default function Projects() {
         maxWidth="sm"
         fullWidth
       >
-        <DialogTitle>Select Columns</DialogTitle>
+        <DialogTitle>{t("selectColumns")}</DialogTitle>
         <DialogContent>
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 2 }}>
             {columns.map((column) => (
@@ -1015,7 +1047,7 @@ export default function Projects() {
             ))}
           </Box>
           <Typography variant="caption" color="text.secondary">
-            *You can choose multiple Columns to hide
+            {t("selectMultipleColumns")}
           </Typography>
           <Box sx={{ mt: 2, display: "flex", justifyContent: "flex-end" }}>
             <Button
@@ -1023,7 +1055,7 @@ export default function Projects() {
               onClick={() => setShowColumnDialog(false)}
               sx={{ textTransform: "none" }}
             >
-              Apply Now
+              {t("applyNow")}
             </Button>
           </Box>
         </DialogContent>
