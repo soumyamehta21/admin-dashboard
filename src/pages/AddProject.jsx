@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
+import { addProject } from "../redux/slices/projectsSlice";
 import {
   Box,
   Typography,
@@ -19,6 +21,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function AddProject() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { t } = useTranslation();
   const [formData, setFormData] = useState({
     customer: "",
@@ -251,10 +254,14 @@ export default function AddProject() {
     );
   };
 
-  const handleAddProject = () => {
+  const handleAddProject = async () => {
     if (validateForm()) {
-      console.log("Adding project:", formData);
-      navigate("/projects");
+      try {
+        await dispatch(addProject(formData)).unwrap();
+        navigate("/projects");
+      } catch (error) {
+        console.error("Failed to add project:", error);
+      }
     }
   };
 
@@ -313,7 +320,10 @@ export default function AddProject() {
                 size="small"
                 sx={{
                   backgroundColor: "background.dashboard",
-                  "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+                  "& .MuiOutlinedInput-notchedOutline": { 
+                    border: errors.customer ? "1px solid" : "none",
+                    borderColor: errors.customer ? "error.main" : "transparent"
+                  },
                   height: "40px",
                 }}
               >
@@ -347,13 +357,18 @@ export default function AddProject() {
               value={formData.refNumber}
               onChange={(e) => handleInputChange("refNumber", e.target.value)}
               error={!!errors.refNumber}
-              helperText={errors.refNumber}
               sx={{
                 backgroundColor: "background.dashboard",
-                "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+                "& .MuiOutlinedInput-notchedOutline": { 
+                  border: errors.refNumber ? "1px solid" : "none",
+                  borderColor: errors.refNumber ? "error.main" : "transparent"
+                },
                 "& .MuiInputBase-root": { height: "40px" },
               }}
             />
+            {errors.refNumber && (
+              <FormHelperText error>{errors.refNumber}</FormHelperText>
+            )}
           </Box>
 
           {/* Project Name */}
@@ -373,13 +388,18 @@ export default function AddProject() {
               value={formData.projectName}
               onChange={(e) => handleInputChange("projectName", e.target.value)}
               error={!!errors.projectName}
-              helperText={errors.projectName}
               sx={{
                 backgroundColor: "background.dashboard",
-                "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+                "& .MuiOutlinedInput-notchedOutline": { 
+                  border: errors.projectName ? "1px solid" : "none",
+                  borderColor: errors.projectName ? "error.main" : "transparent"
+                },
                 "& .MuiInputBase-root": { height: "40px" },
               }}
             />
+            {errors.projectName && (
+              <FormHelperText error>{errors.projectName}</FormHelperText>
+            )}
           </Box>
 
           {/* Project Number */}
@@ -401,13 +421,18 @@ export default function AddProject() {
                 handleInputChange("projectNumber", e.target.value)
               }
               error={!!errors.projectNumber}
-              helperText={errors.projectNumber}
               sx={{
                 backgroundColor: "background.dashboard",
-                "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+                "& .MuiOutlinedInput-notchedOutline": { 
+                  border: errors.projectNumber ? "1px solid" : "none",
+                  borderColor: errors.projectNumber ? "error.main" : "transparent"
+                },
                 "& .MuiInputBase-root": { height: "40px" },
               }}
             />
+            {errors.projectNumber && (
+              <FormHelperText error>{errors.projectNumber}</FormHelperText>
+            )}
           </Box>
 
           {/* Area Location */}
@@ -429,13 +454,18 @@ export default function AddProject() {
                 handleInputChange("areaLocation", e.target.value)
               }
               error={!!errors.areaLocation}
-              helperText={errors.areaLocation}
               sx={{
                 backgroundColor: "background.dashboard",
-                "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+                "& .MuiOutlinedInput-notchedOutline": { 
+                  border: errors.areaLocation ? "1px solid" : "none",
+                  borderColor: errors.areaLocation ? "error.main" : "transparent"
+                },
                 "& .MuiInputBase-root": { height: "40px" },
               }}
             />
+            {errors.areaLocation && (
+              <FormHelperText error>{errors.areaLocation}</FormHelperText>
+            )}
           </Box>
 
           {/* Address */}
@@ -455,13 +485,18 @@ export default function AddProject() {
               value={formData.address}
               onChange={(e) => handleInputChange("address", e.target.value)}
               error={!!errors.address}
-              helperText={errors.address}
               sx={{
                 backgroundColor: "background.dashboard",
-                "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+                "& .MuiOutlinedInput-notchedOutline": { 
+                  border: errors.address ? "1px solid" : "none",
+                  borderColor: errors.address ? "error.main" : "transparent"
+                },
                 "& .MuiInputBase-root": { height: "40px" },
               }}
             />
+            {errors.address && (
+              <FormHelperText error>{errors.address}</FormHelperText>
+            )}
           </Box>
 
           {/* Due Date */}
@@ -533,13 +568,18 @@ export default function AddProject() {
               value={formData.contact}
               onChange={(e) => handleInputChange("contact", e.target.value)}
               error={!!errors.contact}
-              helperText={errors.contact}
               sx={{
                 backgroundColor: "background.dashboard",
-                "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+                "& .MuiOutlinedInput-notchedOutline": { 
+                  border: errors.contact ? "1px solid" : "none",
+                  borderColor: errors.contact ? "error.main" : "transparent"
+                },
                 "& .MuiInputBase-root": { height: "40px" },
               }}
             />
+            {errors.contact && (
+              <FormHelperText error>{errors.contact}</FormHelperText>
+            )}
           </Box>
 
           {/* Manager */}
@@ -560,7 +600,10 @@ export default function AddProject() {
                 size="small"
                 sx={{
                   backgroundColor: "background.dashboard",
-                  "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+                  "& .MuiOutlinedInput-notchedOutline": { 
+                    border: errors.manager ? "1px solid" : "none",
+                    borderColor: errors.manager ? "error.main" : "transparent"
+                  },
                   height: "40px",
                 }}
               >
@@ -595,7 +638,10 @@ export default function AddProject() {
                 size="small"
                 sx={{
                   backgroundColor: "background.dashboard",
-                  "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+                  "& .MuiOutlinedInput-notchedOutline": { 
+                    border: errors.staff ? "1px solid" : "none",
+                    borderColor: errors.staff ? "error.main" : "transparent"
+                  },
                   height: "40px",
                 }}
               >
@@ -628,7 +674,10 @@ export default function AddProject() {
                 size="small"
                 sx={{
                   backgroundColor: "background.dashboard",
-                  "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+                  "& .MuiOutlinedInput-notchedOutline": { 
+                    border: errors.status ? "1px solid" : "none",
+                    borderColor: errors.status ? "error.main" : "transparent"
+                  },
                   height: "40px",
                 }}
               >
@@ -665,13 +714,18 @@ export default function AddProject() {
               value={formData.email}
               onChange={(e) => handleInputChange("email", e.target.value)}
               error={!!errors.email}
-              helperText={errors.email}
               sx={{
                 backgroundColor: "background.dashboard",
-                "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+                "& .MuiOutlinedInput-notchedOutline": { 
+                  border: errors.email ? "1px solid" : "none",
+                  borderColor: errors.email ? "error.main" : "transparent"
+                },
                 "& .MuiInputBase-root": { height: "40px" },
               }}
             />
+            {errors.email && (
+              <FormHelperText error>{errors.email}</FormHelperText>
+            )}
           </Box>
         </Box>
 

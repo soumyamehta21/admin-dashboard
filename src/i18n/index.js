@@ -154,6 +154,12 @@ const resources = {
       emailRequired: "Email is required",
       emailInvalid: "Email is invalid",
       contactInvalid: "Contact must be 10 digits",
+
+      // Estimate validation messages
+      sectionTitleRequired: "Section title is required",
+      itemTitleRequired: "Item name is required",
+      quantityRequired: "Quantity is required and must be greater than 0",
+      priceRequired: "Price is required and must be greater than 0",
     },
   },
   fr: {

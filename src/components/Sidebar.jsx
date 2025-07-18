@@ -37,7 +37,7 @@ const navItems = [
     label: "estimates",
     icon: <RequestQuote fontSize="small" />,
     path: "/estimations",
-    paths: ["/estimations"],
+    paths: ["/estimations", "/estimations/add", "/estimations/edit/:id"],
   },
 ];
 
@@ -82,7 +82,9 @@ export default function Sidebar() {
             const isActive =
               item.paths.includes(location.pathname) ||
               (item.path === "/projects" &&
-                location.pathname.startsWith("/projects/edit/"));
+                location.pathname.startsWith("/projects/edit/")) || 
+              (item.path === "/estimations" &&
+                location.pathname.startsWith("/estimations/edit/"));
 
             return (
               <ListItem key={item.label} disablePadding>

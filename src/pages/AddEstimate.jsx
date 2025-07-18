@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
@@ -11,9 +11,9 @@ import {
   Divider,
   Collapse,
 } from "@mui/material";
-import { Add, Remove } from "@mui/icons-material";
+import { Add, Remove, ExpandMore, ExpandLess } from "@mui/icons-material";
 
-export default function AddEstimate() {
+export default function AddEstimate({ isEditing = false, estimateData = null }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -55,33 +55,64 @@ export default function AddEstimate() {
         },
       ],
     },
-    {
-      id: 2,
-      title: "Sample Section",
+  ]);
+
+  const [errors, setErrors] = useState({});
+
+  // Load data if editing
+  useEffect(() => {
+    if (isEditing && estimateData && estimateData.sections) {
+      setSections(estimateData.sections);
+    }
+  }, [isEditing, estimateData]);
+
+  // Validation function
+  const validateForm = () => {
+    const newErrors = {};
+
+    sections.forEach((section, sectionIndex) => {
+      // Validate section title
+      if (!section.title.trim()) {
+        newErrors[`section_${section.id}_title`] = t("sectionTitleRequired");
+      }
+
+      section.items.forEach((item, itemIndex) => {
+        // Validate required item fields
+        if (!item.title.trim()) {
+          newErrors[`item_${item.id}_title`] = t("itemTitleRequired");
+        }
+        if (!item.quantity || parseFloat(item.quantity) <= 0) {
+          newErrors[`item_${item.id}_quantity`] = t("quantityRequired");
+        }
+        if (!item.price || parseFloat(item.price) <= 0) {
+          newErrors[`item_${item.id}_price`] = t("priceRequired");
+        }
+      });
+    });
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // Clear error when user starts typing
+  const clearError = (errorKey) => {
+    if (errors[errorKey]) {
+      setErrors((prev) => ({
+        ...prev,
+        [errorKey]: "",
+      }));
+    }
+  };
+
+  // Add new section
+  const addSection = () => {
+    const newSection = {
+      id: Date.now(),
+      title: "New Section",
       expanded: true,
       items: [
         {
-          id: 4,
-          title: "",
-          description: "",
-          unit: "",
-          quantity: "",
-          price: "",
-          margin: "",
-          total: 0,
-        },
-        {
-          id: 5,
-          title: "",
-          description: "",
-          unit: "",
-          quantity: "",
-          price: "",
-          margin: "",
-          total: 0,
-        },
-        {
-          id: 6,
+          id: Date.now() + 1,
           title: "",
           description: "",
           unit: "",
@@ -91,8 +122,16 @@ export default function AddEstimate() {
           total: 0,
         },
       ],
-    },
-  ]);
+    };
+    setSections((prevSections) => [...prevSections, newSection]);
+  };
+
+  // Remove section
+  const removeSection = (sectionId) => {
+    setSections((prevSections) =>
+      prevSections.filter((section) => section.id !== sectionId)
+    );
+  };
 
   // Calculate item total
   const calculateItemTotal = useCallback((quantity, price, margin) => {
@@ -113,6 +152,9 @@ export default function AddEstimate() {
           const updatedItems = section.items.map((item) => {
             if (item.id === itemId) {
               const updatedItem = { ...item, [field]: value };
+
+              // Clear error when user starts typing
+              clearError(`item_${itemId}_${field}`);
 
               // Recalculate total when quantity, price, or margin changes
               if (
@@ -144,6 +186,8 @@ export default function AddEstimate() {
     setSections((prevSections) =>
       prevSections.map((section) => {
         if (section.id === sectionId) {
+          // Clear error when user starts typing
+          clearError(`section_${sectionId}_title`);
           return { ...section, title };
         }
         return section;
@@ -233,8 +277,10 @@ export default function AddEstimate() {
   const totals = calculateTotals();
 
   const handleSubmit = () => {
-    console.log("Submitting estimate:", sections);
-    navigate("/estimations");
+    if (validateForm()) {
+      console.log(isEditing ? "Updating estimate:" : "Submitting estimate:", sections);
+      navigate("/estimations");
+    }
   };
 
   const handleCancel = () => {
@@ -243,15 +289,17 @@ export default function AddEstimate() {
 
   return (
     <Box sx={{ p: 0 }}>
-      <Typography
-        variant="h4"
-        fontWeight="bold"
-        mb={3}
-        color="text.main"
-        sx={{ fontSize: "1.5rem" }}
-      >
-        {t("addNewEstimates")}
-      </Typography>
+      {!isEditing && (
+        <Typography
+          variant="h4"
+          fontWeight="bold"
+          mb={3}
+          color="text.main"
+          sx={{ fontSize: "1.5rem" }}
+        >
+          {t("addNewEstimates")}
+        </Typography>
+      )}
 
       <Paper
         sx={{
@@ -268,6 +316,7 @@ export default function AddEstimate() {
             gridTemplateColumns: "1fr 1.5fr 0.8fr 0.8fr 1fr 1fr 1fr 0.5fr",
             gap: 2,
             p: 2,
+            pl: "58px", 
             backgroundColor: "background.default",
             borderBottom: "1px solid",
             borderColor: "divider",
@@ -326,7 +375,7 @@ export default function AddEstimate() {
                   sx={{ mr: 1 }}
                   onClick={() => toggleSection(section.id)}
                 >
-                  {section.expanded ? <Remove /> : <Add />}
+                  {section.expanded ? <ExpandLess /> : <ExpandMore />}
                 </IconButton>
                 <TextField
                   size="small"
@@ -339,7 +388,8 @@ export default function AddEstimate() {
                     width: "150px",
                     "& .MuiOutlinedInput-root": {
                       backgroundColor: "background.default",
-                      border: "1px solid #e0e0e0",
+                      border: errors[`section_${section.id}_title`] ? "1px solid" : "1px solid #e0e0e0",
+                      borderColor: errors[`section_${section.id}_title`] ? "error.main" : "#e0e0e0",
                       borderRadius: "8px",
                       "& fieldset": { border: "none" },
                     },
@@ -371,7 +421,36 @@ export default function AddEstimate() {
                 />
                 <Typography variant="body1">$</Typography>
               </Box>
-              <Box></Box>
+              <Box sx={{ display: "flex", gap: 1 }}>
+                <IconButton
+                  size="small"
+                  onClick={addSection}
+                  sx={{
+                    backgroundColor: "black",
+                    color: "white",
+                    width: 24,
+                    height: 24,
+                    "&:hover": { backgroundColor: "grey.800" },
+                  }}
+                >
+                  <Add fontSize="small" />
+                </IconButton>
+                {sections.length > 1 && (
+                  <IconButton
+                    size="small"
+                    onClick={() => removeSection(section.id)}
+                    sx={{
+                      backgroundColor: "grey.400",
+                      color: "white",
+                      width: 24,
+                      height: 24,
+                      "&:hover": { backgroundColor: "grey.600" },
+                    }}
+                  >
+                    <Remove fontSize="small" />
+                  </IconButton>
+                )}
+              </Box>
             </Box>
 
             {/* Section Items */}
@@ -388,8 +467,6 @@ export default function AddEstimate() {
                       p: 2,
                       pl: "48px", // Add left padding to align with section input
                       alignItems: "center",
-                      borderBottom: "1px solid",
-                      borderColor: "divider",
                       "&:last-child": {
                         borderBottom: "none",
                       },
@@ -406,7 +483,8 @@ export default function AddEstimate() {
                       sx={{
                         "& .MuiOutlinedInput-root": {
                           backgroundColor: "background.default",
-                          border: "1px solid #e0e0e0",
+                          border: errors[`item_${item.id}_title`] ? "1px solid" : "1px solid #e0e0e0",
+                          borderColor: errors[`item_${item.id}_title`] ? "error.main" : "#e0e0e0",
                           borderRadius: "8px",
                           "& fieldset": { border: "none" },
                         },
@@ -468,7 +546,8 @@ export default function AddEstimate() {
                       sx={{
                         "& .MuiOutlinedInput-root": {
                           backgroundColor: "background.default",
-                          border: "1px solid #e0e0e0",
+                          border: errors[`item_${item.id}_quantity`] ? "1px solid" : "1px solid #e0e0e0",
+                          borderColor: errors[`item_${item.id}_quantity`] ? "error.main" : "#e0e0e0",
                           borderRadius: "8px",
                           "& fieldset": { border: "none" },
                         },
@@ -486,7 +565,8 @@ export default function AddEstimate() {
                       sx={{
                         "& .MuiOutlinedInput-root": {
                           backgroundColor: "background.default",
-                          border: "1px solid #e0e0e0",
+                          border: errors[`item_${item.id}_price`] ? "1px solid" : "1px solid #e0e0e0",
+                          borderColor: errors[`item_${item.id}_price`] ? "error.main" : "#e0e0e0",
                           borderRadius: "8px",
                           "& fieldset": { border: "none" },
                         },
@@ -628,7 +708,7 @@ export default function AddEstimate() {
               borderRadius: "8px",
             }}
           >
-            Cancel
+            {t("cancel")}
           </Button>
           <Button
             variant="contained"
@@ -641,7 +721,7 @@ export default function AddEstimate() {
               borderRadius: "8px",
             }}
           >
-            SUBMIT
+            {isEditing ? t("update") : t("submit")}
           </Button>
         </Box>
       </Paper>

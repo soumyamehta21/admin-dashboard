@@ -963,19 +963,19 @@ export default function Projects() {
                   {!hideColumns.includes("status") && (
                     <TableCell>
                       <Chip
-                        label={t(row.status.toLowerCase())}
+                        label={t(row.status)}
                         size="small"
                         sx={{
                           backgroundColor:
-                            row.status === "Completed"
+                            row.status === "completed"
                               ? "#e8f5e8"
-                              : row.status === "Processing"
+                              : row.status === "processing"
                               ? "#fff3e0"
                               : "#ffebee",
                           color:
-                            row.status === "Completed"
+                            row.status === "completed"
                               ? "#2e7d32"
-                              : row.status === "Processing"
+                              : row.status === "processing"
                               ? "#f57c00"
                               : "#d32f2f",
                           fontWeight: 500,

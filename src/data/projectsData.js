@@ -7,7 +7,7 @@ export const projectsData = [
     projectNumber: "PQRST9012R",
     areaLocation: "Telangana",
     address: "Mumbai, Maharashtra",
-    status: "Completed"
+    status: "completed",
   },
   {
     id: 2,
@@ -17,7 +17,7 @@ export const projectsData = [
     projectNumber: "ABCDE1234F",
     areaLocation: "Uttar Pradesh",
     address: "Bhiwani, Haryana",
-    status: "Processing"
+    status: "processing",
   },
   {
     id: 3,
@@ -27,7 +27,7 @@ export const projectsData = [
     projectNumber: "XYZAB6789C",
     areaLocation: "Delhi",
     address: "Avadi, Tamil Nadu",
-    status: "Rejected"
+    status: "rejected",
   },
   {
     id: 4,
@@ -37,7 +37,7 @@ export const projectsData = [
     projectNumber: "PQRST9012R",
     areaLocation: "Karnataka",
     address: "North Dum Dum, West Bengal",
-    status: "On Hold"
+    status: "onhold",
   },
   {
     id: 5,
@@ -47,7 +47,7 @@ export const projectsData = [
     projectNumber: "RSTUV9012B",
     areaLocation: "Andhra Pradesh",
     address: "Anantapur, Andhra Pradesh",
-    status: "In Transit"
+    status: "intransit",
   },
   {
     id: 6,
@@ -57,7 +57,7 @@ export const projectsData = [
     projectNumber: "ABCDE6789Y",
     areaLocation: "Odisha",
     address: "Farrukabad, Uttar Pradesh",
-    status: "Completed"
+    status: "completed",
   },
   {
     id: 7,
@@ -67,7 +67,7 @@ export const projectsData = [
     projectNumber: "VWXYZ2345X",
     areaLocation: "West Bengal",
     address: "Vadodara, Gujarat",
-    status: "Processing"
+    status: "Processing",
   },
   {
     id: 8,
@@ -77,7 +77,7 @@ export const projectsData = [
     projectNumber: "RSTUV2345W",
     areaLocation: "Uttar Pradesh",
     address: "Loni, Uttar Pradesh",
-    status: "Completed"
+    status: "completed",
   },
   {
     id: 9,
@@ -87,7 +87,7 @@ export const projectsData = [
     projectNumber: "DEFGH6789D",
     areaLocation: "Madhya Pradesh",
     address: "Bhilwara, Rajasthan",
-    status: "On Hold"
+    status: "onhold",
   },
   {
     id: 10,
@@ -97,7 +97,7 @@ export const projectsData = [
     projectNumber: "LMNOP5678V",
     areaLocation: "Madhya Pradesh",
     address: "Raichur, Karnataka",
-    status: "In Transit"
+    status: "intransit",
   },
   {
     id: 11,
@@ -107,7 +107,7 @@ export const projectsData = [
     projectNumber: "GHIJK3456H",
     areaLocation: "Tamil Nadu",
     address: "Chennai, Tamil Nadu",
-    status: "Completed"
+    status: "completed",
   },
   {
     id: 12,
@@ -117,7 +117,7 @@ export const projectsData = [
     projectNumber: "STUVW7890S",
     areaLocation: "Gujarat",
     address: "Ahmedabad, Gujarat",
-    status: "Processing"
+    status: "Processing",
   },
   {
     id: 13,
@@ -127,7 +127,7 @@ export const projectsData = [
     projectNumber: "ABCDE2345A",
     areaLocation: "Rajasthan",
     address: "Jaipur, Rajasthan",
-    status: "Rejected"
+    status: "Rejected",
   },
   {
     id: 14,
@@ -137,7 +137,7 @@ export const projectsData = [
     projectNumber: "FGHIJ6789F",
     areaLocation: "Punjab",
     address: "Ludhiana, Punjab",
-    status: "On Hold"
+    status: "onhold",
   },
   {
     id: 15,
@@ -147,7 +147,7 @@ export const projectsData = [
     projectNumber: "KLMNO9012K",
     areaLocation: "Haryana",
     address: "Gurgaon, Haryana",
-    status: "In Transit"
+    status: "intransit",
   },
   {
     id: 16,
@@ -157,7 +157,7 @@ export const projectsData = [
     projectNumber: "PQRST1234P",
     areaLocation: "Kerala",
     address: "Kochi, Kerala",
-    status: "Completed"
+    status: "completed",
   },
   {
     id: 17,
@@ -167,7 +167,7 @@ export const projectsData = [
     projectNumber: "UVWXY4567U",
     areaLocation: "Odisha",
     address: "Bhubaneswar, Odisha",
-    status: "Processing"
+    status: "Processing",
   },
   {
     id: 18,
@@ -177,7 +177,7 @@ export const projectsData = [
     projectNumber: "ZABCD7890Z",
     areaLocation: "Assam",
     address: "Guwahati, Assam",
-    status: "Rejected"
+    status: "Rejected",
   },
   {
     id: 19,
@@ -187,7 +187,7 @@ export const projectsData = [
     projectNumber: "EFGHI0123E",
     areaLocation: "Jharkhand",
     address: "Ranchi, Jharkhand",
-    status: "On Hold"
+    status: "onhold",
   },
   {
     id: 20,
@@ -197,6 +197,6 @@ export const projectsData = [
     projectNumber: "JKLMN3456J",
     areaLocation: "Chhattisgarh",
     address: "Raipur, Chhattisgarh",
-    status: "In Transit"
-  }
+    status: "intransit",
+  },
 ];
