@@ -67,6 +67,44 @@ export default function Estimates() {
     return status;
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString) return "No date";
+    
+    let date;
+    
+    try {
+      if (dateString.includes('-')) {
+        const ddMmmYyyy = dateString.match(/^(\d{1,2})-([A-Za-z]{3})-(\d{4})$/);
+        if (ddMmmYyyy) {
+          const [, day, month, year] = ddMmmYyyy;
+          const monthMap = {
+            'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
+            'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
+          };
+          date = new Date(parseInt(year), monthMap[month], parseInt(day));
+        } else {
+          date = new Date(dateString);
+        }
+      } else {
+        date = new Date(dateString);
+      }
+      
+      if (isNaN(date.getTime())) {
+        throw new Error('Invalid date');
+      }
+      
+      return date.toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      });
+      
+    } catch (error) {
+      console.warn('Date parsing failed for:', dateString);
+      return dateString;
+    }
+  };
+
   return (
     <Box sx={{ p: 0 }}>
       <Box
@@ -165,12 +203,12 @@ export default function Estimates() {
                   </TableCell>
                   <TableCell>
                     <Typography variant="body2" color="text.secondary">
-                      {row.createdDate}
+                      {formatDate(row.createdDate)}
                     </Typography>
                   </TableCell>
                   <TableCell>
                     <Typography variant="body2" color="text.secondary">
-                      {row.lastModified}
+                      {formatDate(row.lastModified)}
                     </Typography>
                   </TableCell>
                   <TableCell sx={{ textAlign: "center" }}>
