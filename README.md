@@ -99,9 +99,6 @@ admin-dashboard/
 │   │   │   ├── estimatesSlice.js
 │   │   │   └── themeSlice.js
 │   │   └── store.js
-│   ├── locales/            # Internationalization files
-│   │   ├── en/
-│   │   └── es/
 │   ├── App.jsx             # Main app component with routing
 │   ├── main.jsx           # Application entry point
 │   ├── theme.jsx          # Material-UI theme configuration
@@ -156,33 +153,13 @@ admin-dashboard/
 
 ## 🔧 Running the Mock API
 
-This application uses mock API calls with simulated delays to demonstrate real-world behavior:
-
-### Mock API Features:
-
-- **Simulated Network Delays**: 300-500ms delays to mimic real API calls
-- **Loading States**: Redux loading states during API operations
-- **Error Handling**: Simulated error scenarios
-- **CRUD Operations**: Full Create, Read, Update, Delete functionality
+This application uses mock data to demonstrate real-world behavior:
 
 ### Mock Data Sources:
 
 - **Projects**: `src/data/projectsData.js`
 - **Estimates**: `src/data/constants.js`
 - **Dashboard Data**: `src/data/constants.js`
-
-### API Simulation:
-
-```javascript
-// Example from projectsSlice.js
-export const fetchProjects = createAsyncThunk(
-  "projects/fetchProjects",
-  async () => {
-    await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate delay
-    return projectsData;
-  }
-);
-```
 
 ## 🏗️ Design Choices & Architecture
 
@@ -231,10 +208,4 @@ npm run dev          # Start development server
 npm run build        # Build for production
 npm run preview      # Preview production build
 
-# Code Quality
-npm run lint         # Run ESLint
-npm run lint:fix     # Fix ESLint issues automatically
-
-# Testing
-npm test             # Run tests (if configured)
 ```
