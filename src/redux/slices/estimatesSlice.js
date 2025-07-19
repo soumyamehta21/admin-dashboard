@@ -1,6 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { estimatesData } from "../../data/constants";
 
+const formatDate = (date = new Date()) => {
+  return date.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+};
+
 export const fetchEstimates = createAsyncThunk(
   "estimates/fetchEstimates",
   async () => {
@@ -17,8 +25,8 @@ export const addEstimate = createAsyncThunk(
       ...estimateData,
       id: Date.now(),
       version: `${String(Date.now()).slice(-5)}`,
-      createdDate: new Date().toLocaleDateString(),
-      lastModified: new Date().toLocaleDateString(),
+      createdDate: formatDate(),
+      lastModified: formatDate(),
     };
     return newEstimate;
   }
@@ -31,7 +39,7 @@ export const updateEstimate = createAsyncThunk(
     return {
       id,
       ...estimateData,
-      lastModified: new Date().toLocaleDateString(),
+      lastModified: formatDate(),
     };
   }
 );
