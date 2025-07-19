@@ -41,9 +41,9 @@ import {
 export default function Projects() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  
-  const { items: projectsData } = useSelector(state => state.projects);
-  
+
+  const { items: projectsData } = useSelector((state) => state.projects);
+
   const [filterBy, setFilterBy] = useState("Date");
   const [status, setStatus] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -67,14 +67,14 @@ export default function Projects() {
   ];
 
   const statusOptions = [
-    {value: "created", label: t("created")},
-    {value: "processing", label: t("processing")},
-    {value: "rejected", label: t("rejected")},
-    {value: "onhold", label: t("onhold")},
-    {value: "intransit", label: t("intransit")},
-    {value: "delivered", label: t("delivered")},
-    {value: "pending", label: t("pending")},
-    {value: "completed", label: t("completed")},
+    { value: "created", label: t("created") },
+    { value: "processing", label: t("processing") },
+    { value: "rejected", label: t("rejected") },
+    { value: "onhold", label: t("onhold") },
+    { value: "intransit", label: t("intransit") },
+    { value: "delivered", label: t("delivered") },
+    { value: "pending", label: t("pending") },
+    { value: "completed", label: t("completed") },
   ];
 
   const filteredData = useMemo(() => {
@@ -102,11 +102,13 @@ export default function Projects() {
       filtered = filtered.filter((item) => {
         if (!item.dueDate) return false;
         const itemDate = new Date(item.dueDate);
-        
+
         return selectedDates.some((selectedDate) => {
-          return itemDate.getFullYear() === selectedDate.getFullYear() &&
-                 itemDate.getMonth() === selectedDate.getMonth() &&
-                 itemDate.getDate() === selectedDate.getDate();
+          return (
+            itemDate.getFullYear() === selectedDate.getFullYear() &&
+            itemDate.getMonth() === selectedDate.getMonth() &&
+            itemDate.getDate() === selectedDate.getDate()
+          );
         });
       });
     }
@@ -133,7 +135,11 @@ export default function Projects() {
   const handleDateSelect = (date) => {
     setSelectedDates((prev) => {
       // Create a new date in local timezone to avoid timezone issues
-      const localDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      const localDate = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate()
+      );
       const dateString = localDate.toDateString();
       const isSelected = prev.some((d) => d.toDateString() === dateString);
 
@@ -454,9 +460,9 @@ export default function Projects() {
             <Box
               key={option?.value}
               onClick={() => {
-                setStatus(prev => 
-                  prev.includes(option?.value) 
-                    ? prev.filter(s => s !== option?.value)
+                setStatus((prev) =>
+                  prev.includes(option?.value)
+                    ? prev.filter((s) => s !== option?.value)
                     : [...prev, option?.value]
                 );
               }}
@@ -465,13 +471,19 @@ export default function Projects() {
                 borderRadius: "20px",
                 cursor: "pointer",
                 border: "1px solid",
-                borderColor: status.includes(option?.value) ? "primary.main" : "divider",
-                backgroundColor:
-                  status.includes(option?.value) ? "primary.main" : "transparent",
-                color: status.includes(option?.value) ? "white" : "text.primary",
+                borderColor: status.includes(option?.value)
+                  ? "primary.main"
+                  : "divider",
+                backgroundColor: status.includes(option?.value)
+                  ? "primary.main"
+                  : "transparent",
+                color: status.includes(option?.value)
+                  ? "white"
+                  : "text.primary",
                 "&:hover": {
-                  backgroundColor:
-                    status.includes(option?.value) ? "primary.dark" : "action.hover",
+                  backgroundColor: status.includes(option?.value)
+                    ? "primary.dark"
+                    : "action.hover",
                 },
               }}
             >
@@ -531,7 +543,7 @@ export default function Projects() {
   const getFullStatusText = () => {
     if (status.length === 0) return t("status");
     if (status.length === 1) return `${t("selected")}: ${t(status[0])}`;
-    const statusLabels = status.map(s => t(s));
+    const statusLabels = status.map((s) => t(s));
     return `${t("selected")}: ${statusLabels.join(", ")}`;
   };
 
@@ -789,27 +801,26 @@ export default function Projects() {
           sx={{
             flexGrow: 1,
             overflowY: "auto",
-            overflowX: "hidden",
+            overflowX: "auto",
+            minWidth: "800px",
             "&::-webkit-scrollbar": {
-              width: "8px",
+              width: "6px",
+              height: "6px",
             },
             "&::-webkit-scrollbar-track": {
               backgroundColor: "transparent",
             },
             "&::-webkit-scrollbar-thumb": {
-              backgroundColor: "rgba(0,0,0,0.2)",
-              borderRadius: "4px",
+              backgroundColor: "rgba(0,0,0,0.1)",
+              borderRadius: "3px",
               "&:hover": {
-                backgroundColor: "rgba(0,0,0,0.3)",
+                backgroundColor: "rgba(0,0,0,0.15)", // Lighter hover
               },
-            },
-            "&::-webkit-scrollbar-thumb:active": {
-              backgroundColor: "rgba(0,0,0,0.4)",
             },
           }}
         >
-          <Table stickyHeader>
-            <TableHead>
+          <Table sx={{ minWidth: "800px" }}>
+            <TableHead sx={{ position: "sticky", top: 0, zIndex: 1 }}>
               <TableRow sx={{ backgroundColor: "background.default" }}>
                 {visibleColumns.map((column) => (
                   <TableCell
@@ -998,11 +1009,13 @@ export default function Projects() {
                   {!hideColumns.includes("dueDate") && (
                     <TableCell>
                       <Typography variant="body2" color="text.secondary">
-                        {row.dueDate ? new Date(row.dueDate).toLocaleDateString("en-GB", {
-                          day: "2-digit",
-                          month: "short",
-                          year: "numeric",
-                        }) : "No date"}
+                        {row.dueDate
+                          ? new Date(row.dueDate).toLocaleDateString("en-GB", {
+                              day: "2-digit",
+                              month: "short",
+                              year: "numeric",
+                            })
+                          : "No date"}
                       </Typography>
                     </TableCell>
                   )}

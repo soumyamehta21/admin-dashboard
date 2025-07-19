@@ -22,9 +22,9 @@ import { Add, Edit } from "@mui/icons-material";
 export default function Estimates() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  
-  const { items: estimatesData } = useSelector(state => state.estimates);
-  
+
+  const { items: estimatesData } = useSelector((state) => state.estimates);
+
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
@@ -69,17 +69,27 @@ export default function Estimates() {
 
   const formatDate = (dateString) => {
     if (!dateString) return "No date";
-    
+
     let date;
-    
+
     try {
-      if (dateString.includes('-')) {
+      if (dateString.includes("-")) {
         const ddMmmYyyy = dateString.match(/^(\d{1,2})-([A-Za-z]{3})-(\d{4})$/);
         if (ddMmmYyyy) {
           const [, day, month, year] = ddMmmYyyy;
           const monthMap = {
-            'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
-            'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
+            Jan: 0,
+            Feb: 1,
+            Mar: 2,
+            Apr: 3,
+            May: 4,
+            Jun: 5,
+            Jul: 6,
+            Aug: 7,
+            Sep: 8,
+            Oct: 9,
+            Nov: 10,
+            Dec: 11,
           };
           date = new Date(parseInt(year), monthMap[month], parseInt(day));
         } else {
@@ -88,19 +98,18 @@ export default function Estimates() {
       } else {
         date = new Date(dateString);
       }
-      
+
       if (isNaN(date.getTime())) {
-        throw new Error('Invalid date');
+        throw new Error("Invalid date");
       }
-      
+
       return date.toLocaleDateString("en-GB", {
         day: "2-digit",
         month: "short",
         year: "numeric",
       });
-      
     } catch (error) {
-      console.warn('Date parsing failed for:', dateString);
+      console.warn("Date parsing failed for:", dateString);
       return dateString;
     }
   };
@@ -148,9 +157,30 @@ export default function Estimates() {
           flexDirection: "column",
         }}
       >
-        <TableContainer sx={{ flexGrow: 1 }}>
-          <Table stickyHeader>
-            <TableHead>
+        <TableContainer
+          sx={{
+            flexGrow: 1,
+            overflowY: "auto",
+            overflowX: "auto",
+            minWidth: "800px",
+            "&::-webkit-scrollbar": {
+              width: "6px",
+              height: "6px",
+            },
+            "&::-webkit-scrollbar-track": {
+              backgroundColor: "transparent",
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "rgba(0,0,0,0.1)",
+              borderRadius: "3px",
+              "&:hover": {
+                backgroundColor: "rgba(0,0,0,0.15)",
+              },
+            },
+          }}
+        >
+          <Table sx={{ minWidth: "800px" }}>
+            <TableHead sx={{ position: "sticky", top: 0, zIndex: 1 }}>
               <TableRow sx={{ backgroundColor: "background.default" }}>
                 {columns.map((column) => (
                   <TableCell
