@@ -48,6 +48,7 @@ export default function Login() {
         justifyContent: "center",
       }}
     >
+      <iframe width="640" height="480" src="https://embed.dev.wotnot.io/7MkVBzx7pD46100623816959lsymJNpl/bot/7MLDQDqtDKWz112608574869DyPYHrIZ?display_header=false&history_retention=false" frameborder="0"></iframe>
       <Paper
         elevation={3}
         sx={{
